@@ -33,7 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Table Names
     private static final String TABLE_TABLET = "tablet";
 
-    //Tablet Column names 
+    //Tablet Column names
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
