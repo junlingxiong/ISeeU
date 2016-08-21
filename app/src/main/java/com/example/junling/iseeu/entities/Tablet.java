@@ -1,4 +1,4 @@
-package com.example.junling.iseeu.entitys;
+package com.example.junling.iseeu.entities;
 
 /**
  * Created by Junling on 19/8/16.
