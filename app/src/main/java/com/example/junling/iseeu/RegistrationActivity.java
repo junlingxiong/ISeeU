@@ -15,10 +15,9 @@ import android.widget.EditText;
 public class RegistrationActivity extends AppCompatActivity {
 
     //UI References
-    private EditText registrationEmailView;
-    private EditText registrationPassword1View;
-    private EditText registrationPassword2View;
-    private View registerProgressView;
+    private EditText deviceNumber;
+    private EditText password;
+    private EditText callerName;
     private View registerFormView;
 
     @Override
@@ -26,22 +25,11 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
-        registrationEmailView = (EditText) findViewById(R.id.registration_email);
-        registrationPassword1View = (EditText) findViewById(R.id.registration_password);
-        registrationPassword2View = (EditText) findViewById(R.id.registration_repeat_password);
+        deviceNumber = (EditText) findViewById(R.id.deviceNumber);
+        password = (EditText) findViewById(R.id.password);
+        callerName = (EditText) findViewById(R.id.callerName);
 
-        registerProgressView = (View) findViewById(R.id.register_progress);
         registerFormView = (View) findViewById(R.id.register_form);
-    }
-
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 6;
     }
 
 }

@@ -10,20 +10,31 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.junling.iseeu.RegistrationActivity">
 
-    <ProgressBar
-        android:id="@+id/register_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
+    <TextView
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="100dp"
+        android:layout_marginLeft="80dp"
+        android:gravity="center"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:textSize="30dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/welcometitle"
+        android:background="#dddd"
+        android:textStyle="bold"
+        android:text="iSeeU \n Register"
+        android:textColor="#444444" />
 
 
     <ScrollView
         android:id="@+id/register_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="250dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp">
 
         <LinearLayout
             android:id="@+id/user_register_form"
@@ -33,11 +44,11 @@
 
 
             <EditText
-                android:id="@+id/registration_email"
+                android:id="@+id/deviceNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_email"
-                android:inputType="textEmailAddress"
+                android:hint="Input Device Number"
+                android:inputType="text"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:layout_centerVertical="true"
@@ -50,11 +61,11 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/registration_password"
+                    android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Password (no less than 6 digits)"
-                    android:inputType="textPassword"
+                    android:hint="Input Device Password"
+                    android:inputType="text"
                     android:maxLines="1"
                     android:singleLine="true" />
 
@@ -65,25 +76,36 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/registration_repeat_password"
+                    android:id="@+id/callerName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Repeat Your Password"
-                    android:inputType="textPassword"
+                    android:hint="Input Caller Name"
+                    android:inputType="text"
                     android:maxLines="1"
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
 
             <Button
-                android:id="@+id/registration_button"
+                android:id="@+id/register_button"
                 style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="40dp"
+                android:layout_gravity="center"
                 android:text="Register"
                 android:textStyle="bold"
                 android:onClick="register"/>
+
+            <Button
+                android:id="@+id/back_button"
+                style="?android:textAppearanceSmall"
+                android:layout_width="200dp"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:text="Back"
+                android:textStyle="bold"
+                android:onClick="back"/>
 
         </LinearLayout>
     </ScrollView>
