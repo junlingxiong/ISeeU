@@ -12,15 +12,17 @@ public class Tablet implements Serializable{
     private String id;
     private String tabletNum;
     private String patientName;
+    private String password;
 
     public Tablet() {
         this.id = "Tablet " + UUID.randomUUID().toString();
     }
 
-    public Tablet(String tabletNum, String patientName) {
+    public Tablet(String tabletNum, String patientName, String password) {
         this.id = "Tablet " + UUID.randomUUID().toString();
         this.tabletNum = tabletNum;
         this.patientName = patientName;
+        this.password = password;
     }
 
     public String getId() {
@@ -46,5 +48,13 @@ public class Tablet implements Serializable{
 
     public void setPatientName(String patientName){
         this.patientName = patientName;
+    }
+
+    public String getPassword(){
+        return password;
+    }
+
+    public void setPassword(String password){
+        this.password = password;
     }
 }
