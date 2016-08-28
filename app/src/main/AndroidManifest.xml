@@ -66,8 +66,14 @@
             android:name=".MobileMain"
             android:label="@string/title_activity_mobile_main"
             android:theme="@style/AppTheme.NoActionBar" />
+<<<<<<< HEAD
         <activity android:name=".TabletMain"></activity>
         <activity android:name=".IncomingCallActivity"></activity>
+=======
+        <activity android:name=".TabletMain" />
+        <activity android:name=".IncomingCallActivity" />
+        <activity android:name=".TabletWelcome"></activity>
+>>>>>>> origin/master
     </application>
 
 </manifest>

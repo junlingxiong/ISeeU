@@ -27,8 +27,7 @@ public class MainActivity extends AppCompatActivity {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         //dbHelper.onCreate(dbHelper.getWritableDatabase());
         dbHelper.onUpgrade(dbHelper.getWritableDatabase(), 1, 2);
-        dbHelper.onCreate(dbHelper.getWritableDatabase());
-        //dbHelper.onUpgrade(dbHelper.getWritableDatabase(), 1, 2);
+
         Log.e(TAG, "onCreate");
 
         // TODO: check hardware features: camera and auto-focus
@@ -58,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     /** Called when the user clicks the login button */
     public void tVersion(View view) {
-        Intent intent = new Intent(this, TabletMain.class);
+        Intent intent = new Intent(this, TabletWelcome.class);
         startActivity(intent);
     }
 
