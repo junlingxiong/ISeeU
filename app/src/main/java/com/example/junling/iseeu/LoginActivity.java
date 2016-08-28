@@ -95,10 +95,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mProgressView = findViewById(R.id.login_progress);
 
         // TODO: for debugging
-        findViewById(R.id.login_button).setOnClickListener(new OnClickListener() {
+        findViewById(R.id.mobile_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LoginActivity.this, GreetingActivity.class));
+            }
+        });
+        findViewById(R.id.tablet_button).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, IncomingCallActivity.class));
             }
         });
     }

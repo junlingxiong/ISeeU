@@ -62,11 +62,15 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".VideoChatActivity" />
         <activity android:name=".GreetingActivity" />
+<<<<<<< HEAD
         <activity
             android:name=".MobileMain"
             android:label="@string/title_activity_mobile_main"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".TabletMain"></activity>
+=======
+        <activity android:name=".IncomingCallActivity"></activity>
+>>>>>>> origin/master
     </application>
 
 </manifest>

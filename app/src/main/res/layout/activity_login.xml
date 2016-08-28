@@ -72,6 +72,24 @@
                 android:text="Log In"
                 android:textStyle="bold" />
 
+            <Button
+                android:id="@+id/mobile_button"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Mobile"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/tablet_button"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Tablet"
+                android:textStyle="bold" />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
