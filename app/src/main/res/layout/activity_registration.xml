@@ -48,7 +48,7 @@
                 android:id="@+id/deviceNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Input Device Number"
+                android:hint="Input Table Name"
                 android:inputType="text"
                 android:maxLines="1"
                 android:singleLine="true"
