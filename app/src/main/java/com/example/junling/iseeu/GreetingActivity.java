@@ -1,11 +1,17 @@
 package com.example.junling.iseeu;
 
+import android.*;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pubnub.api.Callback;
@@ -15,6 +21,8 @@ import com.pubnub.api.PubnubException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.Permission;
+
 /**
  * An interface that listens for incoming calls or places outgoing video calls
  */
@@ -23,7 +31,7 @@ public class GreetingActivity extends AppCompatActivity {
 
     private Pubnub mPubNub;
     private String username;
-    private EditText mCallNumET;
+    private String mCallNumET;
 
 
     @Override
@@ -31,10 +39,21 @@ public class GreetingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_greeting);
 
-        this.mCallNumET  = (EditText) findViewById(R.id.call_num); // TODO: the number to call
-        this.username = "xioz"; // TODO: user name upon registration
+        mCallNumET  = getIntent().getStringExtra(Constants.KEY_DEVICE_NAME); // TODO: the number to call
+        username = getIntent().getStringExtra(Constants.KEY_CALLER_NAME);
+        username = "xioz"; // TODO: for debugging
 
-        initPubNub();
+        ((TextView) findViewById(R.id.greeting_text)).setText("Hello " + username + "!");
+
+        // TODO: check Internet state and register receiver to listen for Internet state changes
+
+        if (ContextCompat.checkSelfPermission(GreetingActivity.this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED) {
+            findViewById(R.id.call_button).setEnabled(true);
+            initPubNub();
+        } else { // request for permission
+            ActivityCompat.requestPermissions(GreetingActivity.this, new String[] {Manifest.permission.CAMERA}, Constants.REQUEST_CAMERA);
+        }
     }
 
     /**
@@ -81,7 +100,8 @@ public class GreetingActivity extends AppCompatActivity {
      * @param view
      */
     public void makeCall(View view){ // check validity of the call number
-        String callNum = mCallNumET.getText().toString();
+        String callNum = mCallNumET;
+        callNum = "user"; // TODO: for debugging
         if (callNum.isEmpty() || callNum.equals(this.username)) {
             Toast.makeText(this, "Enter a valid number.", Toast.LENGTH_SHORT).show();
         }
@@ -89,6 +109,12 @@ public class GreetingActivity extends AppCompatActivity {
     }
 
     /**
+     * Check that user is online. If they are, dispatch the call by publishing to their standby
+     * channel. If the publish was successful, then change activities over to the video chat.
+     * The called user will then have the option to accept of decline the call. If they accept,
+     * they will be brought to the video chat activity as well, to connect video/audio. If
+     * they decline, a hangup will be issued, and the VideoChat adapter's @onHangup callback will be invoked.
+     *
      * This sends a JSONObject to the other user's standby channel with the information {"call_user":"<YourUsername>"}.
      * We then send the user to the VideoChatActivity.
      *
@@ -98,21 +124,58 @@ public class GreetingActivity extends AppCompatActivity {
      */
     public void dispatchCall(final String callNum) {
         final String callNumStdBy = callNum + Constants.STDBY_SUFFIX;
-        JSONObject jsonCall = new JSONObject();
-        try {
-            jsonCall.put(Constants.JSON_CALL_USER, this.username);
-            mPubNub.publish(callNumStdBy, jsonCall, new Callback() { // publish an outgoing call with a callback
-                @Override
-                public void successCallback(String channel, Object message) {
-                    Log.d("MA-dCall", "SUCCESS: " + message.toString());
-                    Intent intent = new Intent(GreetingActivity.this, VideoChatActivity.class);
-                    intent.putExtra(Constants.USER_NAME, username);
-                    intent.putExtra(Constants.CALL_USER, callNum);
-                    startActivity(intent);
+
+        this.mPubNub.hereNow(callNumStdBy, new Callback() { // Read presence information from a channel
+            @Override
+            public void successCallback(String channel, Object message) {
+                Log.d("MA-dC", "HERE_NOW: " +" CH - " + callNumStdBy + " " + message.toString());
+                try {
+                    int occupancy = ((JSONObject) message).getInt(Constants.JSON_OCCUPANCY);
+                    if (occupancy == 0) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(GreetingActivity.this, "User is not online!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        return;
+                    }
+                    JSONObject jsonCall = new JSONObject();
+                    jsonCall.put(Constants.JSON_CALL_USER, username);
+                    jsonCall.put(Constants.JSON_CALL_TIME, System.currentTimeMillis());
+                    mPubNub.publish(callNumStdBy, jsonCall, new Callback() { // publish an outgoing call with a callback
+                        @Override
+                        public void successCallback(String channel, Object message) {
+                            Log.e("MA-dC", "SUCCESS: " + message.toString());
+                            Intent intent = new Intent(GreetingActivity.this, VideoChatActivity.class);
+                            intent.putExtra(Constants.USER_NAME, username); // caller name
+                            intent.putExtra(Constants.CALL_USER, callNum);  // device number
+                            startActivity(intent);
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            });
-        } catch (JSONException e) {
-            e.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case Constants.REQUEST_CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    findViewById(R.id.call_button).setEnabled(true);
+                    initPubNub();
+                } else {
+                    findViewById(R.id.call_button).setEnabled(false);
+                    Toast.makeText(GreetingActivity.this, "Please enable camera access to start video-chat!", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
         }
     }
 

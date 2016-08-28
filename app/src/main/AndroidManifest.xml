@@ -7,13 +7,13 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
-    <!-- WebRTC Dependencies -->
-    <uses-feature android:name="android.hardware.camera" />
+    <!-- WebRTC Dependencies: hardware features -->
+    <uses-feature android:name="android.hardware.camera" android:required="true"/>
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
-
+    <!--must request each dangerous permission at runtime-->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -55,7 +55,7 @@
             android:label="iSeeU Register"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".RegistrationSuccess"
+            android:name=".SuccessActivity"
             android:label="@string/title_activity_registration_success"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".VideoChatActivity" />

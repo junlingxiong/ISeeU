@@ -9,13 +9,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-
+    private final String TAG = getClass().getSimpleName();
 
 
     @Override
@@ -24,8 +25,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         DatabaseHelper dbHelper = new DatabaseHelper(this);
+<<<<<<< HEAD
         //dbHelper.onCreate(dbHelper.getWritableDatabase());
         dbHelper.onUpgrade(dbHelper.getWritableDatabase(), 1, 2);
+=======
+        dbHelper.onCreate(dbHelper.getWritableDatabase());
+        //dbHelper.onUpgrade(dbHelper.getWritableDatabase(), 1, 2);
+        Log.e(TAG, "onCreate");
+
+        // TODO: check hardware features: camera and auto-focus
+
+>>>>>>> origin/master
     }
 
     @Override

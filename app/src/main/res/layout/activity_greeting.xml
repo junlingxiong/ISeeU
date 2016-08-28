@@ -9,33 +9,27 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.junling.iseeu.GreetingActivity">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/greeting_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Hello!"
+        style="@style/TextAppearance.AppCompat.Large"/>
+    <Button
+        android:id="@+id/call_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft  ="@dimen/activity_horizontal_margin"
-        android:paddingRight ="@dimen/activity_horizontal_margin"
-        android:paddingBottom="10dp"
-        android:orientation="horizontal">
-        <EditText
-            android:id="@+id/call_num"
-            android:hint="Enter a number..."
-            android:inputType="textShortMessage"
-            android:maxLines="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="4"/>
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="Video Call"
-                android:onClick="makeCall"/>
-        </RelativeLayout>
-
-    </LinearLayout>
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:text="Video Call"
+        android:onClick="makeCall"/>
+    <Button
+        android:id="@+id/logout_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/call_button"
+        android:text="Log Out"/>
 
 </RelativeLayout>
