@@ -18,8 +18,8 @@
     </string>
     <string name="title_activity_registration">registration</string>
     <string name="title_activity_registration_success">RegistrationSuccess</string>
-    <string name="login_fail_message_device">Incorrect Device Number</string>
-    <string name="login_fail_message_pass">Incorrect Password</string>
+    <string name="login_fail_message_device">Tablet Number does not exist!</string>
+    <string name="login_fail_message_pass">Incorrect password! Please try agian!</string>
     <string name="warning">Warning</string>
     <string name="title_activity_mobile_main">MobileMain</string>
 </resources>
