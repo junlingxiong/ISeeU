@@ -48,7 +48,7 @@
                 android:id="@+id/deviceNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Input Table Name"
+                android:hint="Input Tablet Name"
                 android:inputType="text"
                 android:maxLines="1"
                 android:singleLine="true"
@@ -65,7 +65,7 @@
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Input Device Password"
+                    android:hint="Input Password"
                     android:inputType="text"
                     android:maxLines="1"
                     android:singleLine="true" />
