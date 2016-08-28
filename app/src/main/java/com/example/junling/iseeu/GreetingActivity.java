@@ -2,8 +2,11 @@ package com.example.junling.iseeu;
 
 import android.*;
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +27,9 @@ import org.json.JSONObject;
 import java.security.Permission;
 
 /**
- * An interface that listens for incoming calls or places outgoing video calls
+ * An interface that places outgoing video calls
+ *
+ * Mobile
  */
 public class GreetingActivity extends AppCompatActivity {
     private final String LOG = getClass().getSimpleName();
@@ -41,11 +46,17 @@ public class GreetingActivity extends AppCompatActivity {
 
         mCallNumET  = getIntent().getStringExtra(Constants.KEY_DEVICE_NAME); // TODO: the number to call
         username = getIntent().getStringExtra(Constants.KEY_CALLER_NAME);
-        username = "xioz"; // TODO: for debugging
+        username = "sony"; // TODO: for debugging
 
         ((TextView) findViewById(R.id.greeting_text)).setText("Hello " + username + "!");
 
-        // TODO: check Internet state and register receiver to listen for Internet state changes
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo == null || !networkInfo.isConnected()) { // no established internet connection
+            Toast.makeText(GreetingActivity.this, "Please enable WiFi or cellular data to video-chat!", Toast.LENGTH_SHORT).show();
+            this.finish();
+        }
 
         if (ContextCompat.checkSelfPermission(GreetingActivity.this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -91,6 +102,7 @@ public class GreetingActivity extends AppCompatActivity {
         } catch (PubnubException e) {
             e.printStackTrace();
         }
+        Log.e(LOG, "initPubNub(): registered to receive incoming calls");
     }
 
     /**
@@ -101,7 +113,7 @@ public class GreetingActivity extends AppCompatActivity {
      */
     public void makeCall(View view){ // check validity of the call number
         String callNum = mCallNumET;
-        callNum = "user"; // TODO: for debugging
+        callNum = ((EditText) findViewById(R.id.callerName)).getText().toString(); // TODO: for debugging
         if (callNum.isEmpty() || callNum.equals(this.username)) {
             Toast.makeText(this, "Enter a valid number.", Toast.LENGTH_SHORT).show();
         }
@@ -130,16 +142,16 @@ public class GreetingActivity extends AppCompatActivity {
             public void successCallback(String channel, Object message) {
                 Log.d("MA-dC", "HERE_NOW: " +" CH - " + callNumStdBy + " " + message.toString());
                 try {
-                    int occupancy = ((JSONObject) message).getInt(Constants.JSON_OCCUPANCY);
-                    if (occupancy == 0) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(GreetingActivity.this, "User is not online!", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        return;
-                    }
+//                    int occupancy = ((JSONObject) message).getInt(Constants.JSON_OCCUPANCY);
+//                    if (occupancy == 0) {
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                Toast.makeText(GreetingActivity.this, "User " + callNum + " is not online!", Toast.LENGTH_SHORT).show();
+//                            }
+//                        });
+//                        return;
+//                    }
                     JSONObject jsonCall = new JSONObject();
                     jsonCall.put(Constants.JSON_CALL_USER, username);
                     jsonCall.put(Constants.JSON_CALL_TIME, System.currentTimeMillis());

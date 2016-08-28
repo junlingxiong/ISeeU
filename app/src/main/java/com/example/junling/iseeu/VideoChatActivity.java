@@ -32,8 +32,9 @@ import me.kevingleason.pnwebrtc.PnRTCClient;
 import me.kevingleason.pnwebrtc.PnRTCListener;
 
 /**
+ * An interface for ongoing video-chat
  *
- *
+ * Mobile and Tablet
  */
 public class VideoChatActivity extends AppCompatActivity {
     private final String LOG = getClass().getSimpleName();
