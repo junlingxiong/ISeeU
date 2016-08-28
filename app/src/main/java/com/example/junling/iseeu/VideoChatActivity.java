@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pubnub.api.Callback;
@@ -216,7 +218,6 @@ public class VideoChatActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     localStream.videoTracks.get(0).addRenderer(new VideoRenderer(localRender));
-                    // TODO: CANCEL button
                 }
             });
         }
@@ -233,7 +234,8 @@ public class VideoChatActivity extends AppCompatActivity {
                         // update sizes of the renderers. This will display the remote user fullscreen and a mirrored image of your stream in the bottom right of the GL Surface.
                         VideoRendererGui.update(remoteRender, 0, 0, 100, 100, VideoRendererGui.ScalingType.SCALE_ASPECT_FILL, false);
                         VideoRendererGui.update(localRender, 72, 72, 25, 25, VideoRendererGui.ScalingType.SCALE_ASPECT_FIT, true);
-                        // TODO: HANG UP button
+                        ((TextView) findViewById(R.id.status_text)).setText("Connected");
+                        ((Button) findViewById(R.id.hangup_button)).setText("Hang Up");
                     }
                     catch (Exception e){ e.printStackTrace(); }
                 }

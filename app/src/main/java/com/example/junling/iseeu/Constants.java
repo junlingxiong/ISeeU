@@ -12,5 +12,13 @@ public class Constants {
     public static final String USER_NAME = "user_name";
     public static final String JSON_CALL_USER = "call_user";
     public static final String CALL_USER = "call_user";
+    public static final String JSON_CALL_TIME = "call_time";
+    public static final String JSON_OCCUPANCY = "occupancy";
+
+
+    public static final int REQUEST_CAMERA = 1;
+
+    public static final String KEY_DEVICE_NAME = "KEY_DEVICE_NAME";
+    public static final String KEY_CALLER_NAME = "KEY_CALLER_NAME";
 
 }
