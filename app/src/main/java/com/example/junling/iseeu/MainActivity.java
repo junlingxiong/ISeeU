@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     /** Called when the user clicks the login button */
     public void tVersion(View view) {
-        Intent intent = new Intent(this, TabletMain.class);
+        Intent intent = new Intent(this, TabletWelcome.class);
         startActivity(intent);
     }
 
