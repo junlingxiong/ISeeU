@@ -74,23 +74,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+
         populateAutoComplete();
 
         deviceNumberView = (EditText) findViewById(R.id.deviceNumber);
         passwordView = (EditText) findViewById(R.id.password);
 
         mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
-            }
-        });
+
 
         Button mEmailSignInButton = (Button) findViewById(R.id.login_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -104,18 +95,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mProgressView = findViewById(R.id.login_progress);
 
         // TODO: for debugging
-        findViewById(R.id.mobile_button).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this, GreetingActivity.class));
-            }
-        });
-        findViewById(R.id.tablet_button).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this, IncomingCallActivity.class));
-            }
-        });
+
     }
 
     private void populateAutoComplete() {
