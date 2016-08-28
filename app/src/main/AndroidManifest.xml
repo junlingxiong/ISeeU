@@ -8,12 +8,14 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <!-- WebRTC Dependencies: hardware features -->
-    <uses-feature android:name="android.hardware.camera" android:required="true"/>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
-    <!--must request each dangerous permission at runtime-->
+    <!-- must request each dangerous permission at runtime -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -59,7 +61,12 @@
             android:label="@string/title_activity_registration_success"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".VideoChatActivity" />
-        <activity android:name=".GreetingActivity"></activity>
+        <activity android:name=".GreetingActivity" />
+        <activity
+            android:name=".MobileMain"
+            android:label="@string/title_activity_mobile_main"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".TabletMain"></activity>
     </application>
 
 </manifest>

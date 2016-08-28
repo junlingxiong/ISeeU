@@ -25,17 +25,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         DatabaseHelper dbHelper = new DatabaseHelper(this);
-<<<<<<< HEAD
         //dbHelper.onCreate(dbHelper.getWritableDatabase());
         dbHelper.onUpgrade(dbHelper.getWritableDatabase(), 1, 2);
-=======
         dbHelper.onCreate(dbHelper.getWritableDatabase());
         //dbHelper.onUpgrade(dbHelper.getWritableDatabase(), 1, 2);
         Log.e(TAG, "onCreate");
 
         // TODO: check hardware features: camera and auto-focus
-
->>>>>>> origin/master
     }
 
     @Override
@@ -61,14 +57,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /** Called when the user clicks the login button */
-    public void login(View view) {
-        Intent intent = new Intent(this, LoginActivity.class);
+    public void tVersion(View view) {
+        Intent intent = new Intent(this, TabletMain.class);
         startActivity(intent);
     }
 
     /** Called when the user clicks the register button */
-    public void register(View view) {
-        Intent intent = new Intent(this, RegistrationActivity.class);
+    public void mVersion(View view) {
+        Intent intent = new Intent(this, MobileMain.class);
         startActivity(intent);
     }
 }
