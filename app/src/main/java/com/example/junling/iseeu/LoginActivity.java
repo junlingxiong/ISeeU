@@ -3,6 +3,8 @@ package com.example.junling.iseeu;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -63,6 +65,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
 
+    private EditText deviceNumberView;
+    private EditText passwordView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +76,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
+
+        deviceNumberView = (EditText) findViewById(R.id.deviceNumber);
+        passwordView = (EditText) findViewById(R.id.password);
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -303,6 +312,48 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
+    }
+
+    public void back (View view){
+        finish();
+    }
+
+    public void login(View view){
+        deviceNumberView.setError(null);
+        passwordView.setError(null);
+
+        String deviceNumber = deviceNumberView.getText().toString();
+        String password = passwordView.getText().toString();
+
+
+    }
+
+    //alert wrong device name
+    private void showAlertDialog_device(){
+        final AlertDialog alertDialog = new AlertDialog.Builder(LoginActivity.this).create();
+        alertDialog.setTitle(R.string.warning);
+        alertDialog.setMessage(getString(R.string.login_fail_message_device));
+        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
+    //alert wrong password
+    private void showAlertDialog_pass(){
+        final AlertDialog alertDialog = new AlertDialog.Builder(LoginActivity.this).create();
+        alertDialog.setTitle(R.string.warning);
+        alertDialog.setMessage(getString(R.string.login_fail_message_pass));
+        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
     }
 
     /**

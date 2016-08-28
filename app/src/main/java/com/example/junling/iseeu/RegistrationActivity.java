@@ -58,7 +58,6 @@ public class RegistrationActivity extends AppCompatActivity {
         View focusView = null;
 
         String deviceNumber = deviceNumberView.getText().toString();
-        System.out.printf(deviceNumber);
         String password = passwordView.getText().toString();
         String callerName = callerNameView.getText().toString();
 
@@ -85,6 +84,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 editor.putString(DeviceNum, deviceNumSession);
                 editor.commit();
 
+                //direct to greeting page after login
                 Intent intent = new Intent(this, GreetingActivity.class);
                 startActivity(intent);
                 finish();

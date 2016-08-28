@@ -4,6 +4,7 @@ import android.*;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -48,7 +49,15 @@ public class GreetingActivity extends AppCompatActivity {
         username = getIntent().getStringExtra(Constants.KEY_CALLER_NAME);
         username = "sony"; // TODO: for debugging
 
-        ((TextView) findViewById(R.id.greeting_text)).setText("Hello " + username + "!");
+
+        //get log in session if exists
+        SharedPreferences prefs = this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String callerName = prefs.getString("NameKey", null);
+        String deviceNumber = prefs.getString("DeviceNumKey", null);
+
+        // welcome message in main page.
+
+        ((TextView) findViewById(R.id.greeting_text)).setText("Hello " + callerName + "!");
 
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
