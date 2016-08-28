@@ -27,8 +27,7 @@ public class MainActivity extends AppCompatActivity {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         //dbHelper.onCreate(dbHelper.getWritableDatabase());
         dbHelper.onUpgrade(dbHelper.getWritableDatabase(), 1, 2);
-        dbHelper.onCreate(dbHelper.getWritableDatabase());
-        //dbHelper.onUpgrade(dbHelper.getWritableDatabase(), 1, 2);
+
         Log.e(TAG, "onCreate");
 
         // TODO: check hardware features: camera and auto-focus
