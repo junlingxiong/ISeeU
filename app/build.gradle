@@ -24,5 +24,10 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
-    compile 'io.pristine:libjingle:9127@aar'
+    // WebRTC Android SDK
+//    compile 'io.pristine:libjingle:9127@aar'
+    // PubNub WebRTC dependencies
+    compile 'io.pristine:libjingle:9694@aar' // Pristine's WebRTC library
+    compile 'com.pubnub:pubnub-android:3.7.4' // PubNub Android SDK
+    compile 'me.kevingleason:pnwebrtc:1.0.6@aar' // PnWebRTC Signaling API
 }
