@@ -22,4 +22,5 @@
     <string name="login_fail_message_pass">Incorrect password! Please try agian!</string>
     <string name="warning">Warning</string>
     <string name="title_activity_mobile_main">MobileMain</string>
+    <string name="title_activity_mobile_greeting">MobileGreeting</string>
 </resources>
