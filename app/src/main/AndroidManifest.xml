@@ -25,6 +25,7 @@
     <!-- PubNub Dependencies -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
     <permission
         android:name="your.package.name.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -52,22 +53,26 @@
             android:label="@string/title_activity_login"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".mobile.RegistrationActivity"
+            android:name=".mobile.RegisterActivity"
             android:label="iSeeU Register"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".mobile.SuccessActivity"
+            android:name=".mobile.RegisterSuccessActivity"
             android:label="@string/title_activity_registration_success"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".VideoChatActivity" />
+        <activity android:name=".mobile.VideoChatActivity" />
         <activity android:name=".mobile.GreetingActivity" />
         <activity
             android:name=".mobile.MobileActivity"
             android:label="@string/title_activity_mobile_main"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".tablet.TabletActivity"></activity>
-        <activity android:name=".tablet.IncomingCallActivity"></activity>
-        <activity android:name=".tablet.TabletWelcome"></activity>
+        <activity android:name=".tablet.ResetActivity" />
+        <activity android:name=".tablet.IncomingCallActivity" />
+        <activity android:name=".tablet.TabletActivity" />
+        <activity android:name=".tablet.RegisterActivity" />
+        <activity android:name=".tablet.RegisterSuccessActivity" />
+        <activity android:name=".tablet.PrivacyModeActivity" />
+        <activity android:name=".tablet.VideoChatActivity"></activity>
     </application>
 
 </manifest>

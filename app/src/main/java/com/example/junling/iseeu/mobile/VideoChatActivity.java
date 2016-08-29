@@ -1,4 +1,4 @@
-package com.example.junling.iseeu;
+package com.example.junling.iseeu.mobile;
 
 import android.content.Intent;
 import android.opengl.GLSurfaceView;
@@ -9,7 +9,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.junling.iseeu.mobile.GreetingActivity;
+import com.example.junling.iseeu.MainActivity;
+import com.example.junling.iseeu.R;
 import com.example.junling.iseeu.util.Constants;
 
 import org.webrtc.AudioSource;
@@ -49,7 +50,8 @@ public class VideoChatActivity extends AppCompatActivity {
     // Graphics Library Surface View, made to have content rendered to it
     private GLSurfaceView mVideoView;
 
-    private String username; // our username which was passed in with the intent from the previous activity with the tag Constants.USER_NAME
+    private String mUsername; // our mUsername which was passed in with the intent from the previous activity with the tag Constants.JSON_USER_NAME
+    private String mCallNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,15 +91,15 @@ public class VideoChatActivity extends AppCompatActivity {
     private void initialisePnRTCClient() {
         // retrieve user name passed in from previous activity
         Bundle extras = getIntent().getExtras();
-        if (extras == null || !extras.containsKey(Constants.USER_NAME)) { // send a user back to MainActivity if they did not attach a username to the intent
+        if (extras == null || !extras.containsKey(Constants.JSON_USER_NAME)) { // send a user back to MainActivity if they did not attach a mUsername to the intent
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
-            Toast.makeText(this, "Need to pass username to VideoChatActivity in intent extras (Constants.USER_NAME).",
+            Toast.makeText(this, "Need to pass mUsername to VideoChatActivity in intent extras (Constants.JSON_USER_NAME).",
                     Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
-        this.username  = extras.getString(Constants.USER_NAME, "");
+        this.mUsername = extras.getString(Constants.JSON_USER_NAME, "");
         // These globals effect the PnPeerConnectionClient as well, so set them before instantiating your PnWebRTCClient.
         PeerConnectionFactory.initializeAndroidGlobals(
                 this,  // Context
@@ -111,7 +113,7 @@ public class VideoChatActivity extends AppCompatActivity {
         // PnWebRTCClient contains everything you will need to develop video chat applications.
         // This class has all the functions for signaling with WebRTC protocols,
         // including SDP Offer Options known as MediaConstraints, default MediaConstraint is used when not specified
-        this.pnRTCClient = new PnRTCClient(Constants.PUB_KEY, Constants.SUB_KEY, this.username);
+        this.pnRTCClient = new PnRTCClient(Constants.PUB_KEY, Constants.SUB_KEY, this.mUsername);
         // Currently, the PnRTCClient has default video, audio, and PeerConnection configurations. No need to customize them for this app. However, if you wish to in the future, the README of the PnWebRTC Repo has some useful information on the Client
     }
 
@@ -177,14 +179,14 @@ public class VideoChatActivity extends AppCompatActivity {
         this.pnRTCClient.attachLocalMediaStream(mLocalMediaStream); // will trigger our onLocalStream() callback
 
         // Listen on a channel. This is your "phone number," also set the max chat users.
-        this.pnRTCClient.listenOn(this.username); // begin to listen for calls on our username
+        this.pnRTCClient.listenOn(this.mUsername); // begin to listen for calls on our mUsername
         this.pnRTCClient.setMaxConnections(1);
 
-        // If Constants.CALL_USER is in the intent extras, auto-connect them.
+        // If Constants.JSON_CALL_USER is in the intent extras, auto-connect them.
         Bundle extras = getIntent().getExtras();
-        if (extras.containsKey(Constants.CALL_USER)) {
-            String callUser = extras.getString(Constants.CALL_USER, "");
-            connectToUser(callUser);
+        if (extras.containsKey(Constants.JSON_CALL_USER)) {
+            mCallNum = extras.getString(Constants.JSON_CALL_USER, "");
+            connectToUser(mCallNum);
         }
     }
 
@@ -194,7 +196,10 @@ public class VideoChatActivity extends AppCompatActivity {
 
     public void hangup(View view) {
         this.pnRTCClient.closeAllConnections();
-        startActivity(new Intent(VideoChatActivity.this, GreetingActivity.class));
+        Bundle info = new Bundle();
+        info.putString(Constants.KEY_DEVICE_NAME, mCallNum); // callee: tablet
+        info.putString(Constants.KEY_CALLER_NAME, mUsername); // caller: mobile
+        startActivity(new Intent(VideoChatActivity.this, GreetingActivity.class).putExtras(info));
     }
 
 
@@ -247,8 +252,11 @@ public class VideoChatActivity extends AppCompatActivity {
         @Override
         public void onPeerConnectionClosed(PnPeer peer) {
             // Quit back to GreetingActivity
+            Bundle info = new Bundle();
+            info.putString(Constants.KEY_DEVICE_NAME, mCallNum); // callee: tablet
+            info.putString(Constants.KEY_CALLER_NAME, mUsername); // caller: mobile
             Intent intent = new Intent(VideoChatActivity.this, GreetingActivity.class);
-            startActivity(intent);
+            startActivity(intent.putExtras(info));
             finish();
         }
     }

@@ -9,9 +9,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.junling.iseeu.MainActivity;
 import com.example.junling.iseeu.R;
-import com.example.junling.iseeu.VideoChatActivity;
+import com.example.junling.iseeu.mobile.VideoChatActivity;
 import com.example.junling.iseeu.util.Constants;
 import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
@@ -27,11 +26,10 @@ import me.kevingleason.pnwebrtc.PnPeerConnectionClient;
  */
 public class IncomingCallActivity extends AppCompatActivity {
 
-    private String username;
-    private String callUser;
+    private String mCallee;
+    private String mCaller;
 
     private Pubnub mPubNub;
-    private TextView mCallerID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,22 +37,30 @@ public class IncomingCallActivity extends AppCompatActivity {
         setContentView(R.layout.activity_incoming_call);
 
         Bundle extras = getIntent().getExtras();
-        if (extras==null || !extras.containsKey(Constants.CALL_USER)){
-            Intent intent = new Intent(this, MainActivity.class);
+        if (extras==null || !extras.containsKey(Constants.JSON_CALL_USER)){
+            Intent intent = new Intent(this, PrivacyModeActivity.class);
             startActivity(intent);
-            Toast.makeText(this, "Need to pass username to IncomingCallActivity in intent extras (Constants.CALL_USER).",
+            Toast.makeText(this, "Need to pass mCallee to IncomingCallActivity in intent extras (Constants.JSON_CALL_USER).",
                     Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
-        this.callUser = extras.getString(Constants.CALL_USER, "");
-        this.mCallerID = (TextView) findViewById(R.id.caller_id);
-        this.mCallerID.setText(this.callUser);
+        this.mCallee = extras.getString(Constants.JSON_USER_NAME);
+        this.mCaller = extras.getString(Constants.JSON_CALL_USER, "Unknown");
+        ((TextView) findViewById(R.id.caller_text)).setText("Incoming Video Call \n from " + mCaller);
 
+        // initialise pubnub
         this.mPubNub  = new Pubnub(Constants.PUB_KEY, Constants.SUB_KEY);
-        this.mPubNub.setUUID(this.username);
+        this.mPubNub.setUUID(this.mCallee);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(this.mPubNub!=null){
+            this.mPubNub.unsubscribeAll();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -79,10 +85,12 @@ public class IncomingCallActivity extends AppCompatActivity {
     }
 
     public void acceptCall(View view){
+        Bundle info = new Bundle();
+        info.putString(Constants.JSON_USER_NAME, mCallee); // callee
+        info.putString(Constants.JSON_CALL_USER, mCaller); // caller
         Intent intent = new Intent(IncomingCallActivity.this, VideoChatActivity.class);
-        intent.putExtra(Constants.USER_NAME, this.username);
-        intent.putExtra(Constants.CALL_USER, this.callUser);
-        startActivity(intent);
+        startActivity(intent.putExtras(info));
+        IncomingCallActivity.this.finish();
     }
 
     /**
@@ -90,21 +98,19 @@ public class IncomingCallActivity extends AppCompatActivity {
      * @param view
      */
     public void rejectCall(View view){
-        JSONObject hangupMsg = PnPeerConnectionClient.generateHangupPacket(this.username);
-        this.mPubNub.publish(this.callUser,hangupMsg, new Callback() {
+        JSONObject hangupMsg = PnPeerConnectionClient.generateHangupPacket(this.mCallee);
+        this.mPubNub.publish(this.mCaller, hangupMsg, new Callback() {
             @Override
             public void successCallback(String channel, Object message) {
-                Intent intent = new Intent(IncomingCallActivity.this, MainActivity.class);
-                startActivity(intent);
+                Bundle info = new Bundle();
+                info.putString(Constants.JSON_USER_NAME, mCallee); // callee
+                info.putString(Constants.JSON_CALL_USER, mCaller); // caller
+                Intent intent = new Intent(IncomingCallActivity.this, PrivacyModeActivity.class);
+                startActivity(intent.putExtras(info));
+                IncomingCallActivity.this.finish();
             }
         });
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if(this.mPubNub!=null){
-            this.mPubNub.unsubscribeAll();
-        }
-    }
+
 }

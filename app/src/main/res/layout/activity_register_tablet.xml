@@ -1,30 +1,19 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".mobile.LoginActivity">
-
-
-    <!-- Login progress -->
-    <ProgressBar
-        android:id="@+id/login_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
+    tools:context="com.example.junling.iseeu.tablet.RegisterActivity">
 
     <TextView
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:layout_marginBottom="50dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="100dp"
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:paddingTop="20dp"
@@ -34,28 +23,28 @@
         android:id="@+id/welcometitle"
         android:background="#dddd"
         android:textStyle="bold"
-        android:text="iSeeU \n Login"
+        android:text="iSeeU \n Register"
         android:textColor="#444444" />
 
     <ScrollView
-        android:id="@+id/login_form"
+        android:id="@+id/register_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp">
-
         <LinearLayout
-            android:id="@+id/user_login_form"
+            android:id="@+id/user_register_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/deviceNumber"
+                android:id="@+id/device_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Input Tablet Number"
+                android:hint="Input Device Name"
                 android:inputType="text"
                 android:maxLines="1"
                 android:singleLine="true"
@@ -66,30 +55,26 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
                 <EditText
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Input Device Password"
+                    android:hint="Input Password"
                     android:inputType="text"
                     android:maxLines="1"
                     android:singleLine="true" />
-
             </android.support.design.widget.TextInputLayout>
 
-
-
             <Button
-                android:id="@+id/login_button"
+                android:id="@+id/register_button"
                 style="?android:textAppearanceSmall"
                 android:layout_width="200dp"
-                android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:text="Log In"
+                android:layout_gravity="center"
+                android:text="Register"
                 android:textStyle="bold"
-                android:onClick="login"/>
+                android:onClick="register"/>
 
             <Button
                 android:id="@+id/back_button"
@@ -103,4 +88,5 @@
 
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+
+</RelativeLayout>

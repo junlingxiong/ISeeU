@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -22,13 +23,12 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.junling.iseeu.R;
+import com.example.junling.iseeu.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,25 +70,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_login_mobile);
         // Set up the login form.
 
         populateAutoComplete();
 
-        deviceNumberView = (EditText) findViewById(R.id.deviceNumber);
+        deviceNumberView = (EditText) findViewById(R.id.device_name);
         passwordView = (EditText) findViewById(R.id.password);
 
         mPasswordView = (EditText) findViewById(R.id.password);
 //        mEmailView = (EditText) findViewById(R.id.)
 
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.login_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
+//        Button mEmailSignInButton = (Button) findViewById(R.id.login_button);
+//        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                attemptLogin();
+//            }
+//        });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -265,7 +265,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             cursor.moveToNext();
         }
 
-        addEmailsToAutoComplete(emails);
+//        addEmailsToAutoComplete(emails);
     }
 
     @Override
@@ -298,13 +298,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     public void login(View view){
-        deviceNumberView.setError(null);
-        passwordView.setError(null);
+//        deviceNumberView.setError(null);
+//        passwordView.setError(null);
 
         String deviceNumber = deviceNumberView.getText().toString();
         String password = passwordView.getText().toString();
 
-
+        Bundle info = new Bundle();
+        info.putString(Constants.KEY_DEVICE_NAME, "tablet"); // TODO: replace with device name upon registration
+        info.putString(Constants.KEY_CALLER_NAME, "mobile"); // TODO: replace with caller name upon registration
+        startActivity(new Intent(LoginActivity.this, GreetingActivity.class).putExtras(info)); // TODO: for debugging, PLEASE DO NOT REMOVE
     }
 
     //alert wrong device name

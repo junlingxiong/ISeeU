@@ -1,44 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
 android:layout_height="match_parent" tools:context=".tablet.IncomingCallActivity"
 android:orientation="vertical">
 
-<TextView
-    android:text="Incoming call"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:textSize="26sp"
-    android:layout_margin="25dp"/>
-
-<TextView
-    android:id="@+id/caller_id"
-    android:text="incoming call from"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:textSize="26sp"
-    android:layout_margin="25dp"/>
-
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="60dp">
-
+    <TextView
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:layout_centerHorizontal="true"
+        android:textSize="30dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/welcome_title"
+        android:background="#dddd"
+        android:textStyle="bold"
+        android:text="iSeeU \n Connecting..."
+        android:gravity="center"
+        android:textColor="#444444" />
+    <TextView
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/welcome_title"
+        android:textSize="30dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/caller_text"
+        android:textStyle="bold"
+        android:text="Incoming Video Call \n from "
+        android:gravity="center"
+        android:textColor="#444444" />
     <Button
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:onClick="acceptCall"
-        android:text="Accept"/>
+        style="?android:textAppearanceSmall"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/reject_button"
+        android:layout_centerHorizontal="true"
+        android:text="Accept"
+        android:textStyle="bold"
+        android:onClick="acceptCall"/>
     <Button
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:onClick="rejectCall"
-        android:text="Decline"/>
+        android:id="@+id/reject_button"
+        style="?android:textAppearanceSmall"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/fab_margin"
+        android:layout_marginBottom="100dp"
+        android:text="Reject"
+        android:textStyle="bold"
+        android:onClick="rejectCall"/>
 
-</LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

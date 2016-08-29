@@ -14,7 +14,7 @@ import com.example.junling.iseeu.R;
 import com.example.junling.iseeu.entities.*;
 import com.example.junling.iseeu.util.DatabaseHelper;
 
-public class RegistrationActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
 
     //UI References
     private EditText deviceNumberView;
@@ -35,9 +35,9 @@ public class RegistrationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registration);
+        setContentView(R.layout.activity_register_mobile);
 
-        deviceNumberView = (EditText) findViewById(R.id.deviceNumber);
+        deviceNumberView = (EditText) findViewById(R.id.device_name);
         passwordView = (EditText) findViewById(R.id.password);
         callerNameView = (EditText) findViewById(R.id.callerName);
 
@@ -60,8 +60,7 @@ public class RegistrationActivity extends AppCompatActivity {
         if(!hasTablet){
             //no such tablet
             showAlertDialog_device();
-        }
-        else {
+        } else {
             boolean isPassCorrect = dbHelper.checkPass(deviceNumber, password);
             if(!isPassCorrect)
                 showAlertDialog_pass();
@@ -91,7 +90,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void showAlertDialog_device(){
 
-        final AlertDialog alertDialog = new AlertDialog.Builder(RegistrationActivity.this).create();
+        final AlertDialog alertDialog = new AlertDialog.Builder(RegisterActivity.this).create();
         alertDialog.setTitle(R.string.warning);
         alertDialog.setMessage(getString(R.string.login_fail_message_device));
         alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
@@ -105,7 +104,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void showAlertDialog_pass(){
 
-        final AlertDialog alertDialog = new AlertDialog.Builder(RegistrationActivity.this).create();
+        final AlertDialog alertDialog = new AlertDialog.Builder(RegisterActivity.this).create();
         alertDialog.setTitle(R.string.warning);
         alertDialog.setMessage(getString(R.string.login_fail_message_pass));
         alertDialog.setButton("OK", new DialogInterface.OnClickListener() {

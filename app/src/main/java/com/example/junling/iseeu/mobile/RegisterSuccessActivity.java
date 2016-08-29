@@ -9,7 +9,7 @@ import android.view.View;
 
 import com.example.junling.iseeu.R;
 
-public class SuccessActivity extends AppCompatActivity {
+public class RegisterSuccessActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

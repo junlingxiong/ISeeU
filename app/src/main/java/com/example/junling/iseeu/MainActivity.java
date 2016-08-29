@@ -8,11 +8,11 @@ import android.view.View;
 import android.view.MenuItem;
 
 import com.example.junling.iseeu.mobile.MobileActivity;
-import com.example.junling.iseeu.tablet.TabletWelcome;
+import com.example.junling.iseeu.tablet.TabletActivity;
 import com.example.junling.iseeu.util.DatabaseHelper;
 
 public class MainActivity extends AppCompatActivity {
-    private final String TAG = getClass().getSimpleName();
+    private final String LOG = getClass().getSimpleName();
 
 
     @Override
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
      * Gateway to tablet version of the application
      */
     public void tVersion(View view) {
-        Intent intent = new Intent(this, TabletWelcome.class);
+        Intent intent = new Intent(this, TabletActivity.class);
         startActivity(intent);
     }
 

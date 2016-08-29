@@ -23,7 +23,7 @@ public class MobileActivity extends AppCompatActivity {
 
     /** Called when the user clicks the register button */
     public void register(View view) {
-        Intent intent = new Intent(MobileActivity.this, RegistrationActivity.class);
+        Intent intent = new Intent(MobileActivity.this, RegisterActivity.class);
         startActivity(intent);
     }
 
