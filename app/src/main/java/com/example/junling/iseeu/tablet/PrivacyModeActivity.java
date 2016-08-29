@@ -1,7 +1,9 @@
 package com.example.junling.iseeu.tablet;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -37,30 +39,23 @@ public class PrivacyModeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_privacy_mode);
 
-        Bundle info = getIntent().getExtras();
-        if (info == null || !info.containsKey(Constants.KEY_DEVICE_NAME) || !info.containsKey(Constants.KEY_PASSWORD)) {
-            startActivity(new Intent(this, RegisterActivity.class));
-            Toast.makeText(this, "Please re-enter the tablet device name and password!", Toast.LENGTH_SHORT).show();
-            this.finish();
-            return;
-        }
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.TABLET_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        mDevice = sharedPreferences.getString(Constants.KEY_DEVICE_NAME, "Unspecified");
+        mPassword = sharedPreferences.getString(Constants.KEY_PASSWORD, "Unspecified");
+        ((TextView) findViewById(R.id.device_name)).setText("Device Name: " + mDevice);
+        ((TextView) findViewById(R.id.password)).setText("Password: " + mPassword);
 
-        mDevice = info.getString(Constants.KEY_DEVICE_NAME, "tablet"); // mDevice = "tablet" if not device name is entered by the user, for debugging
-        mPassword = info.getString(Constants.KEY_PASSWORD);
-        ((TextView) findViewById(R.id.device_name)).setText("Device Name: " + (mDevice.equals("")? "Unknown" : mDevice));
-        ((TextView) findViewById(R.id.password)).setText("Password: " + (mPassword.equals("")? "Unknown" : mPassword));
+        mPubNub = new Pubnub(Constants.PUB_KEY, Constants.SUB_KEY);
+        mPubNub.setUUID(this.mDevice);
 
         if (ContextCompat.checkSelfPermission(PrivacyModeActivity.this, Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_GRANTED) {
-            findViewById(R.id.privacy_mode_button).setEnabled(true);
-            initPubNub();
-        } else { // request for permission
+                != PackageManager.PERMISSION_GRANTED) { // request for permission
             ActivityCompat.requestPermissions(PrivacyModeActivity.this, new String[] {Manifest.permission.CAMERA}, Constants.REQUEST_CAMERA);
         }
 
         ((ToggleButton) findViewById(R.id.privacy_mode_button)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                if (isChecked) { // default state is checked
                     registerToReceive(); // register to receive incoming calls
                 } else {
                     declineToReceive(); // unsubscribe from the incoming call channel
@@ -69,11 +64,11 @@ public class PrivacyModeActivity extends AppCompatActivity {
         });
     }
 
-    private void initPubNub() { // handles receiving calls
-        mPubNub = new Pubnub(Constants.PUB_KEY, Constants.SUB_KEY);
-        mPubNub.setUUID(this.mDevice);
-    }
-
+    /**
+     * Subscribe to the standby channel to receive incoming calls
+     *
+     * pubnub.subscribe() should be called before pubnub.unsubscribe()
+     */
     private void registerToReceive() {
         try {
             String stdbyChannel = this.mDevice + Constants.STDBY_SUFFIX;
@@ -85,12 +80,12 @@ public class PrivacyModeActivity extends AppCompatActivity {
                     JSONObject jsonMsg = (JSONObject) message;
                     try {
                         if (!jsonMsg.has(Constants.JSON_CALL_USER)) return;
-                        String caller = jsonMsg.getString(Constants.JSON_CALL_USER);
+                        String callerName = jsonMsg.getString(Constants.JSON_CALL_USER);
                         // Consider Accept/Reject call here
-                        Bundle info = new Bundle();
-                        info.putString(Constants.JSON_USER_NAME, mDevice); // callee
-                        info.putString(Constants.JSON_CALL_USER, caller); // caller
-                        startActivity(new Intent(PrivacyModeActivity.this, IncomingCallActivity.class).putExtras(info));
+                        Intent intent = new Intent(PrivacyModeActivity.this, IncomingCallActivity.class);
+                        intent.putExtra(Constants.KEY_CALLER_NAME, callerName);
+                        startActivity(intent);
+                        // does NOT finish() this activity when there's an incoming call (because if user rejects, we can come back)
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -120,11 +115,7 @@ public class PrivacyModeActivity extends AppCompatActivity {
         switch (requestCode) {
             case Constants.REQUEST_CAMERA: {
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    findViewById(R.id.privacy_mode_button).setEnabled(true);
-                    initPubNub();
-                } else {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) { // permission denied
                     findViewById(R.id.privacy_mode_button).setEnabled(false);
                     Toast.makeText(PrivacyModeActivity.this, "Please enable camera access to start video-chat!", Toast.LENGTH_SHORT).show();
                 }

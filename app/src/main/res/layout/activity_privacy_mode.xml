@@ -55,8 +55,8 @@
         android:textOff=""
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:checked="false"
-        android:enabled="false"/>
+        android:checked="true"
+        android:enabled="true"/>
 
     <Button
         style="?android:textAppearanceSmall"

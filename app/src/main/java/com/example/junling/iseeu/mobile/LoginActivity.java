@@ -4,8 +4,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -304,10 +306,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String deviceNumber = deviceNumberView.getText().toString();
         String password = passwordView.getText().toString();
 
-        Bundle info = new Bundle();
-        info.putString(Constants.KEY_DEVICE_NAME, "tablet"); // TODO: replace with device name upon registration
-        info.putString(Constants.KEY_CALLER_NAME, "mobile"); // TODO: replace with caller name upon registration
-        startActivity(new Intent(LoginActivity.this, GreetingActivity.class).putExtras(info)); // TODO: for debugging, PLEASE DO NOT REMOVE
+        // TODO: perform authentication for password
+
+        Intent intent = new Intent(this, GreetingActivity.class);
+        startActivity(intent); // TODO: for debugging, PLEASE DO NOT REMOVE
     }
 
     //alert wrong device name

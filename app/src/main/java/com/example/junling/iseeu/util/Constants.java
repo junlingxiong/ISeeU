@@ -19,8 +19,10 @@ public class Constants {
 
     public static final String KEY_DEVICE_NAME = "KEY_DEVICE_NAME";
     public static final String KEY_PASSWORD = "KEY_PASSWORD";
-    public static final String KEY_CALLER_NAME = "KEY_CALLER_NAME"; // for mobile app
+    public static final String KEY_CALLER_NAME = "KEY_CALLER_NAME";
 
-    public static final String NAME_SHARED_PREFERENCES = "NAME_SHARED_PREFERENCES";
+    public static final String MOBILE_SHARED_PREFERENCES = "MOBILE_SHARED_PREFERENCES";
+    public static final String TABLET_SHARED_PREFERENCES = "TABLET_SHARED_PREFERENCES";
+
 
 }

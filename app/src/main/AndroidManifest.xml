@@ -56,11 +56,6 @@
             android:name=".mobile.RegisterActivity"
             android:label="iSeeU Register"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".mobile.RegisterSuccessActivity"
-            android:label="@string/title_activity_registration_success"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".mobile.VideoChatActivity" />
         <activity android:name=".mobile.GreetingActivity" />
         <activity
             android:name=".mobile.MobileActivity"
@@ -70,9 +65,8 @@
         <activity android:name=".tablet.IncomingCallActivity" />
         <activity android:name=".tablet.TabletActivity" />
         <activity android:name=".tablet.RegisterActivity" />
-        <activity android:name=".tablet.RegisterSuccessActivity" />
         <activity android:name=".tablet.PrivacyModeActivity" />
-        <activity android:name=".tablet.VideoChatActivity"></activity>
+        <activity android:name=".VideoChatActivity"></activity>
     </application>
 
 </manifest>

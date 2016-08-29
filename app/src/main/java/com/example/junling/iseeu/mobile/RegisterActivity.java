@@ -12,6 +12,7 @@ import android.widget.EditText;
 
 import com.example.junling.iseeu.R;
 import com.example.junling.iseeu.entities.*;
+import com.example.junling.iseeu.util.Constants;
 import com.example.junling.iseeu.util.DatabaseHelper;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -71,15 +72,14 @@ public class RegisterActivity extends AppCompatActivity {
                 String nameSession = callerName;
                 String deviceNumSession = deviceNumber;
 
-                sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+                sharedpreferences = getSharedPreferences(Constants.MOBILE_SHARED_PREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedpreferences.edit();
-
-                editor.putString(Name, nameSession);
-                editor.putString(DeviceNum, deviceNumSession);
+                editor.putString(Constants.KEY_CALLER_NAME, nameSession);
+                editor.putString(Constants.KEY_DEVICE_NAME, deviceNumSession);
                 editor.commit();
 
                 //direct to greeting page after login
-                Intent intent = new Intent(this, MobileGreeting.class);
+                Intent intent = new Intent(this, GreetingActivity.class);
                 startActivity(intent);
                 finish();
             }

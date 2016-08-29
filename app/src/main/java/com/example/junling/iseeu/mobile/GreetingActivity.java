@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.junling.iseeu.R;
+import com.example.junling.iseeu.VideoChatActivity;
 import com.example.junling.iseeu.util.Constants;
 import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
@@ -42,26 +43,15 @@ public class GreetingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_greeting);
 
-        Bundle info = getIntent().getExtras();
-        if (info == null || !info.containsKey(Constants.KEY_DEVICE_NAME) || !info.containsKey(Constants.KEY_CALLER_NAME)) {
-            startActivity(new Intent(this, com.example.junling.iseeu.tablet.RegisterActivity.class));
-            Toast.makeText(this, "Please re-enter the tablet device name and caller name!", Toast.LENGTH_SHORT).show();
-            this.finish();
-            return;
-        }
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.MOBILE_SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
-        mCallNumET  = info.getString(Constants.KEY_DEVICE_NAME);
-        mUsername = info.getString(Constants.KEY_CALLER_NAME);
-
-        // TODO: this can be checked at log in page / register page (e.g. auto-fill edit text if value exists in shared pref)
-        //get log in session if exists
-        SharedPreferences prefs = this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        String callerName = prefs.getString("NameKey", null);
-        String deviceNumber = prefs.getString("DeviceNumKey", null);
+        mCallNumET  = sharedPreferences.getString(Constants.KEY_DEVICE_NAME, "Unspecified");
+        mUsername = sharedPreferences.getString(Constants.KEY_CALLER_NAME, "Unspecified");
 
         // welcome message in main page.
         ((TextView) findViewById(R.id.greeting_text)).setText("Hello " + mUsername + "!");
 
+        // check network connection
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -71,26 +61,19 @@ public class GreetingActivity extends AppCompatActivity {
             return;
         }
 
+        this.mPubNub = new Pubnub(Constants.PUB_KEY, Constants.SUB_KEY);
+        this.mPubNub.setUUID(this.mUsername);
+
+        // check camera permission
         if (ContextCompat.checkSelfPermission(GreetingActivity.this, Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_GRANTED) {
-            findViewById(R.id.call_button).setEnabled(true);
-            initPubNub();
-        } else { // request for permission
+                != PackageManager.PERMISSION_GRANTED) { // request for permission
             ActivityCompat.requestPermissions(GreetingActivity.this, new String[] {Manifest.permission.CAMERA}, Constants.REQUEST_CAMERA);
         }
     }
 
-    /**
-     * This function subscribes you to the mUsername's standby channel.
-     * When it receives a message, it pulls out the JSON_CALL_USER field, call_user.
-     *
-     * In this demo, we will create a video that simply requires you pass it your user_name in the intent.
-     * If you also provide the intent with a JSON_CALL_USER, it will try to auto-connect you to that user.
-     * You can see that we send the user to VideoChatActivity
-     */
-    private void initPubNub() { // handles receiving calls
-        this.mPubNub = new Pubnub(Constants.PUB_KEY, Constants.SUB_KEY);
-        this.mPubNub.setUUID(this.mUsername);
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     /**
@@ -100,7 +83,7 @@ public class GreetingActivity extends AppCompatActivity {
      * @param view
      */
     public void makeCall(View view){ // check validity of the call number
-        String callNum = mCallNumET; // callee
+        String callNum = mCallNumET; // callee: tablet device name
         callNum = ((EditText) findViewById(R.id.callerName)).getText().toString(); // TODO: for debugging
         if (callNum.isEmpty() || callNum.equals(this.mUsername)) {
             Toast.makeText(this, "Call number is not valid!", Toast.LENGTH_SHORT).show();
@@ -130,16 +113,16 @@ public class GreetingActivity extends AppCompatActivity {
             public void successCallback(String channel, Object message) {
                 Log.d("MA-dC", "HERE_NOW: " +" CH - " + callNumStdBy + " " + message.toString());
                 try {
-//                    int occupancy = ((JSONObject) message).getInt(Constants.JSON_OCCUPANCY);
-//                    if (occupancy == 0) {
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                Toast.makeText(GreetingActivity.this, "User " + callNum + " is not online!", Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-//                        return;
-//                    }
+                    int occupancy = ((JSONObject) message).getInt(Constants.JSON_OCCUPANCY);
+                    if (occupancy == 0) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(GreetingActivity.this, "User " + callNum + " is not online!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        return;
+                    }
                     JSONObject jsonCall = new JSONObject();
                     jsonCall.put(Constants.JSON_CALL_USER, mUsername);
                     jsonCall.put(Constants.JSON_CALL_TIME, System.currentTimeMillis());
@@ -147,11 +130,11 @@ public class GreetingActivity extends AppCompatActivity {
                         @Override
                         public void successCallback(String channel, Object message) {
                             Log.e("MA-dC", "SUCCESS: " + message.toString());
-                            Bundle info = new Bundle();
-                            info.putString(Constants.JSON_USER_NAME, mUsername); // caller: mobile
-                            info.putString(Constants.JSON_CALL_USER, callNum); // callee: tablet
                             Intent intent = new Intent(GreetingActivity.this, VideoChatActivity.class);
-                            startActivity(intent.putExtras(info));
+                            intent.putExtra(Constants.JSON_USER_NAME, mUsername); // caller name
+                            intent.putExtra(Constants.JSON_CALL_USER, callNum); // device name
+                            startActivity(intent);
+                            // do NOT finish() this activity, as when call ends it might return to this interface
                         }
                     });
                 } catch (JSONException e) {
@@ -167,11 +150,7 @@ public class GreetingActivity extends AppCompatActivity {
         switch (requestCode) {
             case Constants.REQUEST_CAMERA: {
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    findViewById(R.id.call_button).setEnabled(true);
-                    initPubNub();
-                } else {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) { // permission denied
                     findViewById(R.id.call_button).setEnabled(false);
                     Toast.makeText(GreetingActivity.this, "Please enable camera access to start video-chat!", Toast.LENGTH_SHORT).show();
                 }

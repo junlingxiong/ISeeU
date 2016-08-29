@@ -1,16 +1,17 @@
 package com.example.junling.iseeu.tablet;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.junling.iseeu.R;
-import com.example.junling.iseeu.mobile.VideoChatActivity;
+import com.example.junling.iseeu.VideoChatActivity;
 import com.example.junling.iseeu.util.Constants;
 import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
@@ -25,9 +26,10 @@ import me.kevingleason.pnwebrtc.PnPeerConnectionClient;
  * Tablet
  */
 public class IncomingCallActivity extends AppCompatActivity {
+    private final String LOG = getClass().getSimpleName();
 
-    private String mCallee;
-    private String mCaller;
+    private String mUserName; // tablet device name
+    private String mCaller; // mobile caller name
 
     private Pubnub mPubNub;
 
@@ -36,29 +38,22 @@ public class IncomingCallActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_incoming_call);
 
-        Bundle extras = getIntent().getExtras();
-        if (extras==null || !extras.containsKey(Constants.JSON_CALL_USER)){
-            Intent intent = new Intent(this, PrivacyModeActivity.class);
-            startActivity(intent);
-            Toast.makeText(this, "Need to pass mCallee to IncomingCallActivity in intent extras (Constants.JSON_CALL_USER).",
-                    Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-        this.mCallee = extras.getString(Constants.JSON_USER_NAME);
-        this.mCaller = extras.getString(Constants.JSON_CALL_USER, "Unknown");
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.TABLET_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        mUserName = sharedPreferences.getString(Constants.KEY_DEVICE_NAME, "Unspecified");
+
+        mCaller = getIntent().getStringExtra(Constants.KEY_CALLER_NAME); // returns null if caller is not specified
         ((TextView) findViewById(R.id.caller_text)).setText("Incoming Video Call \n from " + mCaller);
 
         // initialise pubnub
-        this.mPubNub  = new Pubnub(Constants.PUB_KEY, Constants.SUB_KEY);
-        this.mPubNub.setUUID(this.mCallee);
+        mPubNub  = new Pubnub(Constants.PUB_KEY, Constants.SUB_KEY);
+        mPubNub.setUUID(mUserName);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if(this.mPubNub!=null){
-            this.mPubNub.unsubscribeAll();
+        if(mPubNub!=null){
+            mPubNub.unsubscribeAll();
         }
     }
 
@@ -85,11 +80,10 @@ public class IncomingCallActivity extends AppCompatActivity {
     }
 
     public void acceptCall(View view){
-        Bundle info = new Bundle();
-        info.putString(Constants.JSON_USER_NAME, mCallee); // callee
-        info.putString(Constants.JSON_CALL_USER, mCaller); // caller
-        Intent intent = new Intent(IncomingCallActivity.this, VideoChatActivity.class);
-        startActivity(intent.putExtras(info));
+        Intent intent = new Intent(this, VideoChatActivity.class);
+        intent.putExtra(Constants.JSON_USER_NAME, mUserName); // pass in the tablet device name as user name
+//        intent.putExtra(Constants.JSON_CALL_USER, mCaller); // call user == null (@setUpCall())
+        startActivity(intent);
         IncomingCallActivity.this.finish();
     }
 
@@ -98,16 +92,11 @@ public class IncomingCallActivity extends AppCompatActivity {
      * @param view
      */
     public void rejectCall(View view){
-        JSONObject hangupMsg = PnPeerConnectionClient.generateHangupPacket(this.mCallee);
+        JSONObject hangupMsg = PnPeerConnectionClient.generateHangupPacket(this.mUserName);
         this.mPubNub.publish(this.mCaller, hangupMsg, new Callback() {
             @Override
             public void successCallback(String channel, Object message) {
-                Bundle info = new Bundle();
-                info.putString(Constants.JSON_USER_NAME, mCallee); // callee
-                info.putString(Constants.JSON_CALL_USER, mCaller); // caller
-                Intent intent = new Intent(IncomingCallActivity.this, PrivacyModeActivity.class);
-                startActivity(intent.putExtras(info));
-                IncomingCallActivity.this.finish();
+                IncomingCallActivity.this.finish(); // goes back to previous activity, whichever that may be
             }
         });
     }
