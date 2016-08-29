@@ -25,6 +25,7 @@
     <!-- PubNub Dependencies -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
     <permission
         android:name="your.package.name.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -60,14 +61,17 @@
             android:label="@string/title_activity_registration_success"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".VideoChatActivity" />
-        <activity android:name=".mobile.GreetingActivity" />
         <activity
             android:name=".mobile.MobileActivity"
             android:label="@string/title_activity_mobile_main"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".tablet.TabletActivity"></activity>
-        <activity android:name=".tablet.IncomingCallActivity"></activity>
-        <activity android:name=".tablet.TabletWelcome"></activity>
+        <activity android:name=".tablet.TabletActivity" />
+        <activity android:name=".tablet.IncomingCallActivity" />
+        <activity android:name=".tablet.TabletWelcome" />
+        <activity
+            android:name=".mobile.MobileGreeting"
+            android:label="@string/title_activity_mobile_greeting"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

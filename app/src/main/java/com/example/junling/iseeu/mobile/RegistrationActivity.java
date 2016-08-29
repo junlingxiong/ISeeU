@@ -80,7 +80,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 editor.commit();
 
                 //direct to greeting page after login
-                Intent intent = new Intent(this, GreetingActivity.class);
+                Intent intent = new Intent(this, MobileGreeting.class);
                 startActivity(intent);
                 finish();
             }

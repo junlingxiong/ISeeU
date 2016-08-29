@@ -32,7 +32,7 @@ import org.json.JSONObject;
  *
  * Mobile
  */
-public class GreetingActivity extends AppCompatActivity {
+public class MobileGreeting extends AppCompatActivity {
     private final String LOG = getClass().getSimpleName();
 
     private Pubnub mPubNub;
@@ -43,7 +43,7 @@ public class GreetingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_greeting);
+        setContentView(R.layout.activity_mobile_greeting);
 
         mCallNumET  = getIntent().getStringExtra(Constants.KEY_DEVICE_NAME); // TODO: the number to call
         username = getIntent().getStringExtra(Constants.KEY_CALLER_NAME);
@@ -63,16 +63,16 @@ public class GreetingActivity extends AppCompatActivity {
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo == null || !networkInfo.isConnected()) { // no established internet connection
-            Toast.makeText(GreetingActivity.this, "Please enable WiFi or cellular data to video-chat!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MobileGreeting.this, "Please enable WiFi or cellular data to video-chat!", Toast.LENGTH_SHORT).show();
             this.finish();
         }
 
-        if (ContextCompat.checkSelfPermission(GreetingActivity.this, Manifest.permission.CAMERA)
+        if (ContextCompat.checkSelfPermission(MobileGreeting.this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED) {
             findViewById(R.id.call_button).setEnabled(true);
             initPubNub();
         } else { // request for permission
-            ActivityCompat.requestPermissions(GreetingActivity.this, new String[] {Manifest.permission.CAMERA}, Constants.REQUEST_CAMERA);
+            ActivityCompat.requestPermissions(MobileGreeting.this, new String[] {Manifest.permission.CAMERA}, Constants.REQUEST_CAMERA);
         }
     }
 
@@ -99,7 +99,7 @@ public class GreetingActivity extends AppCompatActivity {
                         if (!jsonMsg.has(Constants.JSON_CALL_USER)) return;
                         String user = jsonMsg.getString(Constants.JSON_CALL_USER);
                         // Consider Accept/Reject call here
-                        Intent intent = new Intent(GreetingActivity.this, VideoChatActivity.class);
+                        Intent intent = new Intent(MobileGreeting.this, VideoChatActivity.class);
                         intent.putExtra(Constants.USER_NAME, username);
                         intent.putExtra(Constants.JSON_CALL_USER, user);
                         startActivity(intent);
@@ -168,7 +168,7 @@ public class GreetingActivity extends AppCompatActivity {
                         @Override
                         public void successCallback(String channel, Object message) {
                             Log.e("MA-dC", "SUCCESS: " + message.toString());
-                            Intent intent = new Intent(GreetingActivity.this, VideoChatActivity.class);
+                            Intent intent = new Intent(MobileGreeting.this, VideoChatActivity.class);
                             intent.putExtra(Constants.USER_NAME, username); // caller name
                             intent.putExtra(Constants.CALL_USER, callNum);  // device number
                             startActivity(intent);
@@ -193,7 +193,7 @@ public class GreetingActivity extends AppCompatActivity {
                     initPubNub();
                 } else {
                     findViewById(R.id.call_button).setEnabled(false);
-                    Toast.makeText(GreetingActivity.this, "Please enable camera access to start video-chat!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MobileGreeting.this, "Please enable camera access to start video-chat!", Toast.LENGTH_SHORT).show();
                 }
                 return;
             }

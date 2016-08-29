@@ -9,8 +9,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.junling.iseeu.mobile.GreetingActivity;
 import com.example.junling.iseeu.util.Constants;
+import com.example.junling.iseeu.mobile.MobileGreeting;
 
 import org.webrtc.AudioSource;
 import org.webrtc.AudioTrack;
@@ -194,7 +194,7 @@ public class VideoChatActivity extends AppCompatActivity {
 
     public void hangup(View view) {
         this.pnRTCClient.closeAllConnections();
-        startActivity(new Intent(VideoChatActivity.this, GreetingActivity.class));
+        startActivity(new Intent(VideoChatActivity.this, MobileGreeting.class));
     }
 
 
@@ -247,7 +247,7 @@ public class VideoChatActivity extends AppCompatActivity {
         @Override
         public void onPeerConnectionClosed(PnPeer peer) {
             // Quit back to GreetingActivity
-            Intent intent = new Intent(VideoChatActivity.this, GreetingActivity.class);
+            Intent intent = new Intent(VideoChatActivity.this, MobileGreeting.class);
             startActivity(intent);
             finish();
         }
