@@ -1,6 +1,5 @@
-package com.example.junling.iseeu;
+package com.example.junling.iseeu.mobile;
 
-import android.*;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -18,14 +17,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.junling.iseeu.R;
+import com.example.junling.iseeu.VideoChatActivity;
+import com.example.junling.iseeu.util.Constants;
 import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
 import com.pubnub.api.PubnubException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.security.Permission;
 
 /**
  * An interface that places outgoing video calls

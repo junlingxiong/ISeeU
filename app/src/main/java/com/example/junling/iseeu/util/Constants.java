@@ -1,4 +1,4 @@
-package com.example.junling.iseeu;
+package com.example.junling.iseeu.util;
 
 /**
  * Created by Chuck on 25/8/16.

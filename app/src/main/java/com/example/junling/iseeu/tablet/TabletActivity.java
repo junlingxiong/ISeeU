@@ -1,13 +1,15 @@
-package com.example.junling.iseeu;
+package com.example.junling.iseeu.tablet;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class TabletMain extends AppCompatActivity {
+import com.example.junling.iseeu.R;
+
+public class TabletActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tablet_main);
+        setContentView(R.layout.activity_tablet);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.junling.iseeu;
+package com.example.junling.iseeu.tablet;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +9,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.junling.iseeu.MainActivity;
+import com.example.junling.iseeu.R;
+import com.example.junling.iseeu.VideoChatActivity;
+import com.example.junling.iseeu.util.Constants;
 import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
 

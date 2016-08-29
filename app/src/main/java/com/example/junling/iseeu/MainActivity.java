@@ -1,19 +1,15 @@
 package com.example.junling.iseeu;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.MenuItem;
-import android.widget.TextView;
+
+import com.example.junling.iseeu.mobile.MobileActivity;
+import com.example.junling.iseeu.tablet.TabletWelcome;
+import com.example.junling.iseeu.util.DatabaseHelper;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG = getClass().getSimpleName();
@@ -27,8 +23,6 @@ public class MainActivity extends AppCompatActivity {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         //dbHelper.onCreate(dbHelper.getWritableDatabase());
         dbHelper.onUpgrade(dbHelper.getWritableDatabase(), 1, 2);
-
-        Log.e(TAG, "onCreate");
 
         // TODO: check hardware features: camera and auto-focus
     }
@@ -55,15 +49,19 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /** Called when the user clicks the login button */
+    /**
+     * Gateway to tablet version of the application
+     */
     public void tVersion(View view) {
         Intent intent = new Intent(this, TabletWelcome.class);
         startActivity(intent);
     }
 
-    /** Called when the user clicks the register button */
+    /**
+     * Gateway to mobile version of the application
+     */
     public void mVersion(View view) {
-        Intent intent = new Intent(this, MobileMain.class);
+        Intent intent = new Intent(this, MobileActivity.class);
         startActivity(intent);
     }
 }

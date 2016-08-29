@@ -1,11 +1,10 @@
-package com.example.junling.iseeu;
+package com.example.junling.iseeu.mobile;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -22,15 +21,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+
+import com.example.junling.iseeu.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +79,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         passwordView = (EditText) findViewById(R.id.password);
 
         mPasswordView = (EditText) findViewById(R.id.password);
+//        mEmailView = (EditText) findViewById(R.id.)
 
 
         Button mEmailSignInButton = (Button) findViewById(R.id.login_button);

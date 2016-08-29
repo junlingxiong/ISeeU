@@ -48,26 +48,26 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".mobile.LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".RegistrationActivity"
+            android:name=".mobile.RegistrationActivity"
             android:label="iSeeU Register"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SuccessActivity"
+            android:name=".mobile.SuccessActivity"
             android:label="@string/title_activity_registration_success"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".VideoChatActivity" />
-        <activity android:name=".GreetingActivity" />
+        <activity android:name=".mobile.GreetingActivity" />
         <activity
-            android:name=".MobileMain"
+            android:name=".mobile.MobileActivity"
             android:label="@string/title_activity_mobile_main"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".TabletMain"></activity>
-        <activity android:name=".IncomingCallActivity"></activity>
-        <activity android:name=".TabletWelcome"></activity>
+        <activity android:name=".tablet.TabletActivity"></activity>
+        <activity android:name=".tablet.IncomingCallActivity"></activity>
+        <activity android:name=".tablet.TabletWelcome"></activity>
     </application>
 
 </manifest>
