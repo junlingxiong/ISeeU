@@ -151,6 +151,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long todo_id1 = db.insert(TABLE_CALLER, null, values);
     }
 
+    public void resetPassword(String deviceNum, String newPass){
+        SQLiteDatabase db = this.getReadableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TABLET_PASSWORD, newPass);
+
+        db.update(TABLE_TABLET, values, TABLET_Number +" = '"+ deviceNum + "'", null);
+        /*
+        String selectQuery = "SELECT * FROM " + TABLE_TABLET + " WHERE TABLETNUM = '" + deviceNum + "'";
+        Log.e(LOG, selectQuery);
+        Cursor c = db.rawQuery(selectQuery, null);
+        c.moveToFirst();
+
+        Tablet tablet = new Tablet();
+
+        tablet.setId(c.getString(c.getColumnIndex(KEY_ID)));
+        tablet.setTabletNum(c.getString(c.getColumnIndex(TABLET_Number)));
+        tablet.setPassword(c.getString(c.getColumnIndex(TABLET_PASSWORD)));
+        tablet.setPatientName(c.getString(c.getColumnIndex(TABLET_PNAME)));
+        */
+
+    }
+
     // closing database
     public void closeDB() {
         SQLiteDatabase db = this.getReadableDatabase();

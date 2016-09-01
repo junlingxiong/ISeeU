@@ -41,7 +41,7 @@ public class GreetingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_greeting);
+        setContentView(R.layout.activity_mobile_greeting);
 
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.MOBILE_SHARED_PREFERENCES, Context.MODE_PRIVATE);
 

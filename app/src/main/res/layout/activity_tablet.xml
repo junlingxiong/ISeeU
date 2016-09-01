@@ -58,7 +58,7 @@
         android:background="#808080"
         android:text="Exit"
         android:textColor="#FFFFFF"
-        android:onClick=""
+        android:onClick="exit"
         android:textStyle="bold"/>
 
 </LinearLayout>

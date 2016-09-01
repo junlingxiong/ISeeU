@@ -23,4 +23,5 @@
     <string name="warning">Warning</string>
     <string name="title_activity_mobile_main">MobileMain</string>
     <string name="title_activity_mobile_greeting">MobileGreeting</string>
+    <string name="confirm_pass_error">Password is inconsistent! Please input again!</string>
 </resources>

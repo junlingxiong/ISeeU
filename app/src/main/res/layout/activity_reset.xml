@@ -39,17 +39,19 @@
         android:layout_marginRight="30dp">
 
         <LinearLayout
-            android:id="@+id/user_register_form"
+            android:id="@+id/tablet_reset_pass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <EditText
+            <TextView
                 android:id="@+id/device_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Input Tablet Name"
-                android:inputType="text"
+                android:layout_marginBottom="25dp"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:text="hahhaha"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:layout_centerVertical="true"
@@ -73,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <EditText
-                    android:id="@+id/callerName"
+                    android:id="@+id/confirmPass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Confirm Password"
