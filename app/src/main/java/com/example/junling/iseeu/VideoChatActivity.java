@@ -33,6 +33,8 @@ import me.kevingleason.pnwebrtc.PnRTCListener;
  * An interface for ongoing video-chat
  *
  * Mobile and Tablet
+ *
+ * Note: this is the ONLY activity that requires the triggering activity to pass in @username and @callnum along with the intent
  */
 public class VideoChatActivity extends AppCompatActivity {
     private final String LOG = getClass().getSimpleName();
@@ -208,6 +210,7 @@ public class VideoChatActivity extends AppCompatActivity {
                     localStream.videoTracks.get(0).addRenderer(new VideoRenderer(localRender));
                 }
             });
+            Log.e(LOG, "onLocalStream(): ");
         }
 
         @Override
@@ -228,21 +231,21 @@ public class VideoChatActivity extends AppCompatActivity {
                     catch (Exception e){ e.printStackTrace(); }
                 }
             });
+            Log.e(LOG, "onAddRemoteStream(): ");
+
         }
 
         @Override
         public void onMessage(PnPeer peer, Object message) {
-            /// Handle Message
+            // Handle Message
         }
 
         @Override
         public void onPeerConnectionClosed(PnPeer peer) {
-            // Quit back to GreetingActivity
-            Bundle info = new Bundle();
-            info.putString(Constants.KEY_DEVICE_NAME, mCallNum); // callee: tablet
-            info.putString(Constants.KEY_CALLER_NAME, mUserName); // caller: mobile
+            Log.e(LOG, "onPeerConnectionClosed(): ");
+            // Quit back to GreetingActivity or PrivacyModeActivity
             Intent intent = new Intent(VideoChatActivity.this, GreetingActivity.class);
-            startActivity(intent.putExtras(info));
+            startActivity(intent);
             finish();
         }
     }

@@ -51,29 +51,18 @@ public class GreetingActivity extends AppCompatActivity {
         // welcome message in main page.
         ((TextView) findViewById(R.id.greeting_text)).setText("Hello " + mUsername + "!");
 
-        // check network connection
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo == null || !networkInfo.isConnected()) { // no established internet connection
-            Toast.makeText(GreetingActivity.this, "Please enable WiFi or cellular data to video-chat!", Toast.LENGTH_SHORT).show();
-            findViewById(R.id.call_button).setEnabled(false);
-            return;
-        }
-
         this.mPubNub = new Pubnub(Constants.PUB_KEY, Constants.SUB_KEY);
         this.mPubNub.setUUID(this.mUsername);
-
-        // check camera permission
-        if (ContextCompat.checkSelfPermission(GreetingActivity.this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) { // request for permission
-            ActivityCompat.requestPermissions(GreetingActivity.this, new String[] {Manifest.permission.CAMERA}, Constants.REQUEST_CAMERA);
-        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        // check camera permission
+        if (ContextCompat.checkSelfPermission(GreetingActivity.this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) { // request for permission
+            ActivityCompat.requestPermissions(GreetingActivity.this, new String[] {Manifest.permission.CAMERA}, Constants.REQUEST_CAMERA);
+        }
     }
 
     /**
@@ -83,6 +72,14 @@ public class GreetingActivity extends AppCompatActivity {
      * @param view
      */
     public void makeCall(View view){ // check validity of the call number
+        // check network connection
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo == null || !networkInfo.isConnected()) { // no established internet connection
+            Toast.makeText(GreetingActivity.this, "Please enable WiFi or cellular data to video-chat!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String callNum = mCallNumET; // callee: tablet device name
         callNum = ((EditText) findViewById(R.id.callerName)).getText().toString(); // TODO: for debugging
         if (callNum.isEmpty() || callNum.equals(this.mUsername)) {
@@ -151,7 +148,6 @@ public class GreetingActivity extends AppCompatActivity {
             case Constants.REQUEST_CAMERA: {
                 // If request is cancelled, the result arrays are empty.
                 if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) { // permission denied
-                    findViewById(R.id.call_button).setEnabled(false);
                     Toast.makeText(GreetingActivity.this, "Please enable camera access to start video-chat!", Toast.LENGTH_SHORT).show();
                 }
                 return;

@@ -24,10 +24,6 @@ public class RegisterActivity extends AppCompatActivity {
     private SharedPreferences sharedpreferences;
     private EditText deviceNumberView;
 
-    public static final String MyPREFERENCES = "MyPrefs" ;
-    public static final String Name = "NameKey";
-    public static final String DeviceNum = "DeviceNumKey";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

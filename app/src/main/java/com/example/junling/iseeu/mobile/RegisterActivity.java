@@ -23,15 +23,8 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText callerNameView;
     private View registerFormView;
 
-    private Caller caller;
-    private Tablet device;
-
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
     private SharedPreferences sharedpreferences;
-
-    public static final String MyPREFERENCES = "MyPrefs" ;
-    public static final String Name = "NameKey";
-    public static final String DeviceNum = "DeviceNumKey";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,17 +34,13 @@ public class RegisterActivity extends AppCompatActivity {
         deviceNumberView = (EditText) findViewById(R.id.device_name);
         passwordView = (EditText) findViewById(R.id.password);
         callerNameView = (EditText) findViewById(R.id.callerName);
-
-        registerFormView = (View) findViewById(R.id.register_form);
+        registerFormView = findViewById(R.id.register_form);
     }
 
     public void register (View view){
         deviceNumberView.setError(null);
         passwordView.setError(null);
         callerNameView.setError(null);
-
-        boolean cancel = false;
-        View focusView = null;
 
         String deviceNumber = deviceNumberView.getText().toString();
         String password = passwordView.getText().toString();

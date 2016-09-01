@@ -44,7 +44,7 @@ public class ResetActivity extends AppCompatActivity {
     }
 
     public void reset(View v) {
-        //check pass and confirmpass
+        //check pass and confirm pass
         passwordView.setError(null);
         confirmPassView.setError(null);
 
@@ -54,7 +54,7 @@ public class ResetActivity extends AppCompatActivity {
         if(!password.equals(confirmPass)){
             showAlertDialog_confirmPass();
         }else{
-            dbHelper.resetPassword(deviceNum,password);
+            dbHelper.resetPassword(deviceNum, password);
 
             //for video
             ConnectivityManager connMgr = (ConnectivityManager)
@@ -65,8 +65,7 @@ public class ResetActivity extends AppCompatActivity {
                 // store the device name and password into persistent storage, after which retrieval is ready for video call
                 SharedPreferences sharedPreferences = getSharedPreferences(Constants.TABLET_SHARED_PREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(Constants.KEY_DEVICE_NAME, deviceNum);
-
+                editor.putString(Constants.KEY_PASSWORD, password);
                 editor.commit();
                 // display registration success dialogue
                 new AlertDialog.Builder(this)

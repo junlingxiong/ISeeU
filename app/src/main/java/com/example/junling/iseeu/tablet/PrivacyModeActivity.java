@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -48,20 +50,32 @@ public class PrivacyModeActivity extends AppCompatActivity {
         mPubNub = new Pubnub(Constants.PUB_KEY, Constants.SUB_KEY);
         mPubNub.setUUID(this.mDevice);
 
-        if (ContextCompat.checkSelfPermission(PrivacyModeActivity.this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) { // request for permission
-            ActivityCompat.requestPermissions(PrivacyModeActivity.this, new String[] {Manifest.permission.CAMERA}, Constants.REQUEST_CAMERA);
-        }
-
         ((ToggleButton) findViewById(R.id.privacy_mode_button)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) { // default state is checked
+                    // check network connection
+                    ConnectivityManager connMgr = (ConnectivityManager)
+                            getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+                    if (networkInfo == null || !networkInfo.isConnected()) { // no established internet connection
+                        Toast.makeText(PrivacyModeActivity.this, "Please enable WiFi or cellular data to video-chat!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     registerToReceive(); // register to receive incoming calls
                 } else {
                     declineToReceive(); // unsubscribe from the incoming call channel
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (ContextCompat.checkSelfPermission(PrivacyModeActivity.this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) { // request for permission
+            ActivityCompat.requestPermissions(PrivacyModeActivity.this, new String[] {Manifest.permission.CAMERA}, Constants.REQUEST_CAMERA);
+        }
     }
 
     /**
@@ -75,7 +89,7 @@ public class PrivacyModeActivity extends AppCompatActivity {
             this.mPubNub.subscribe(stdbyChannel, new Callback() { // subscribe to incoming calls with a callback
                 @Override
                 public void successCallback(String channel, Object message) {
-                    Log.d("MA-success", "MESSAGE: " + message.toString());
+                    Log.e("MA-success", "MESSAGE: " + message.toString());
                     if (!(message instanceof JSONObject)) return; // Ignore if not JSONObject
                     JSONObject jsonMsg = (JSONObject) message;
                     try {
@@ -91,17 +105,16 @@ public class PrivacyModeActivity extends AppCompatActivity {
                     }
                 }
             });
+            Log.e(LOG, "initPubNub(): registered to receive incoming calls at " + stdbyChannel);
         } catch (PubnubException e) {
             e.printStackTrace();
         }
-        Log.e(LOG, "initPubNub(): registered to receive incoming calls");
     }
 
     private void declineToReceive() {
         String stdbyChannel = this.mDevice + Constants.STDBY_SUFFIX;
-        JSONObject hangupMsg = PnPeerConnectionClient.generateHangupPacket(this.mDevice);
         mPubNub.unsubscribe(stdbyChannel); // unsubscribe from the channel
-        Log.e(LOG, "declineToReceive(): unsubscribed to incoming calls");
+        Log.e(LOG, "declineToReceive(): unsubscribed to incoming calls from " + stdbyChannel);
     }
 
     public void reset(View v) {
