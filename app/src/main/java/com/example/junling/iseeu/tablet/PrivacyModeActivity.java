@@ -80,8 +80,6 @@ public class PrivacyModeActivity extends AppCompatActivity {
 
     /**
      * Subscribe to the standby channel to receive incoming calls
-     *
-     * pubnub.subscribe() should be called before pubnub.unsubscribe()
      */
     private void registerToReceive() {
         try {
