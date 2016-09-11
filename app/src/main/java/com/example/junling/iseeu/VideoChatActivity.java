@@ -34,10 +34,11 @@ import me.kevingleason.pnwebrtc.PnRTCListener;
  *
  * Mobile and Tablet
  *
- * Note: this is the ONLY activity that requires the triggering activity to pass in @username and @callnum along with the intent
+ * Note: this is the ONLY activity that requires the triggering activity to pass in TODO: @ and @ along with the intent
  */
 public class VideoChatActivity extends AppCompatActivity {
     private final String LOG = getClass().getSimpleName();
+
     // arbitrary tags used to identify tracks and streams
     public static final String VIDEO_TRACK_ID = "videoPN";
     public static final String AUDIO_TRACK_ID = "audioPN";
@@ -92,7 +93,7 @@ public class VideoChatActivity extends AppCompatActivity {
     }
 
     private void initialisePnRTCClient() {
-        this.mUserName = getIntent().getStringExtra(Constants.JSON_USER_NAME); // returns null if user name is not specifed
+        this.mUserName = getIntent().getStringExtra(Constants.KEY_USER_NAME); // returns null if user name is not specifed
         // These globals effect the PnPeerConnectionClient as well, so set them before instantiating your PnWebRTCClient.
         PeerConnectionFactory.initializeAndroidGlobals(
                 this,  // Context
@@ -163,9 +164,6 @@ public class VideoChatActivity extends AppCompatActivity {
         // The only thing left to do now is set up the PnWebRTC Signaling.
     }
 
-    /**
-     *
-     */
     private void setUpCall() {
         // First attach the RTC Listener so that callback events will be triggered
         this.pnRTCClient.attachRTCListener(new MyRTCListener());
@@ -176,7 +174,7 @@ public class VideoChatActivity extends AppCompatActivity {
         this.pnRTCClient.setMaxConnections(1);
 
         // If Constants.JSON_CALL_USER is in the intent extras, auto-connect them.
-        mCallNum = getIntent().getStringExtra(Constants.JSON_CALL_USER); // returns null if call user not specified
+        mCallNum = getIntent().getStringExtra(Constants.KEY_CALL_USER); // returns null if call user not specified
         if (mCallNum != null) { // called when this method is triggered on mobile side and call user (device name) is passed in from intent
             this.pnRTCClient.connect(mCallNum);
             Log.e(LOG, "setUpCall(): connectToUser " + mCallNum);
@@ -232,7 +230,6 @@ public class VideoChatActivity extends AppCompatActivity {
                 }
             });
             Log.e(LOG, "onAddRemoteStream(): ");
-
         }
 
         @Override
@@ -242,11 +239,11 @@ public class VideoChatActivity extends AppCompatActivity {
 
         @Override
         public void onPeerConnectionClosed(PnPeer peer) {
-            Log.e(LOG, "onPeerConnectionClosed(): ");
             // Quit back to GreetingActivity or PrivacyModeActivity
             Intent intent = new Intent(VideoChatActivity.this, GreetingActivity.class);
             startActivity(intent);
             finish();
+            Log.e(LOG, "onPeerConnectionClosed(): ");
         }
     }
 }

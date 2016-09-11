@@ -24,6 +24,9 @@ public class Constants {
     public static final String KEY_DEVICE_NAME = "KEY_DEVICE_NAME";
     public static final String KEY_PASSWORD = "KEY_PASSWORD";
     public static final String KEY_CALLER_NAME = "KEY_CALLER_NAME";
+    public static final String KEY_USER_NAME = "KEY_USER_NAME";
+    public static final String KEY_CALL_USER = "KEY_CALL_USER"; // If Constants.CALL_USER is in the intent extras, auto-connect them.
+
 
     public static final String MOBILE_SHARED_PREFERENCES = "MOBILE_SHARED_PREFERENCES";
     public static final String TABLET_SHARED_PREFERENCES = "TABLET_SHARED_PREFERENCES";

@@ -52,8 +52,7 @@ public class IncomingCallActivity extends AppCompatActivity {
 
     public void acceptCall(View view){
         Intent intent = new Intent(this, VideoChatActivity.class);
-        intent.putExtra(Constants.JSON_USER_NAME, mDeviceName); // user name: device name (tablet)
-        intent.putExtra(Constants.JSON_CALL_USER, mCaller); // call user: caller name (mobile)
+        intent.putExtra(Constants.KEY_USER_NAME, mDeviceName);
         startActivity(intent);
         finish();
         Log.e(LOG, "acceptCall(): call accepted, transitioning to video call");

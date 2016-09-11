@@ -80,7 +80,7 @@ public class GreetingActivity extends AppCompatActivity {
             return;
         }
         String callNum = mDeviceName; // callee: tablet device name
-        callNum = ((EditText) findViewById(R.id.callerName)).getText().toString(); // TODO: for debugging
+//        callNum = ((EditText) findViewById(R.id.callerName)).getText().toString(); // TODO: for debugging
         if (callNum.isEmpty() || callNum.equals(this.mCallerName)) {
             Toast.makeText(this, "Call number is not valid!", Toast.LENGTH_SHORT).show();
             return;
@@ -107,7 +107,7 @@ public class GreetingActivity extends AppCompatActivity {
         this.mPubNub.hereNow(callNumStdBy, new Callback() { // Read presence information from a channel
             @Override
             public void successCallback(String channel, Object message) {
-                Log.d("MA-dC", "HERE_NOW: " +" CH - " + callNumStdBy + " " + message.toString());
+                Log.e(LOG + "MA-dC", "dispatchCall.successCallback(): HERE_NOW: " +" CH - " + callNumStdBy + " " + message.toString());
                 try {
                     int occupancy = ((JSONObject) message).getInt(Constants.JSON_OCCUPANCY);
                     if (occupancy == 0) {
@@ -125,11 +125,12 @@ public class GreetingActivity extends AppCompatActivity {
                     mPubNub.publish(callNumStdBy, jsonCall, new Callback() { // publish an outgoing call with a callback
                         @Override
                         public void successCallback(String channel, Object message) {
-                            Log.e("MA-dC", "SUCCESS: " + message.toString());
+                            Log.e(LOG + "MA-dC", "dispatchCall.publish.successCallback(): SUCCESS: " + message.toString());
                             Intent intent = new Intent(GreetingActivity.this, VideoChatActivity.class);
-                            intent.putExtra(Constants.JSON_USER_NAME, mCallerName); // caller name
-                            intent.putExtra(Constants.JSON_CALL_USER, callNum); // device name
+                            intent.putExtra(Constants.KEY_USER_NAME, mCallerName); // caller name
+                            intent.putExtra(Constants.KEY_CALL_USER, callNum); // device name
                             startActivity(intent);
+                            Log.e(LOG, "pubnub.publish.successCallback(): outgoing call placed successfully, transitioning to video call");
                             // do NOT finish() this activity, as when call ends it might return to this interface
                         }
                     });
