@@ -22,19 +22,19 @@ import com.example.junling.iseeu.R;
 import com.example.junling.iseeu.util.Constants;
 import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
+import com.pubnub.api.PubnubError;
 import com.pubnub.api.PubnubException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import me.kevingleason.pnwebrtc.PnPeerConnectionClient;
-
 public class PrivacyModeActivity extends AppCompatActivity {
     private final String LOG = getClass().getSimpleName();
 
-    private String mDevice; // callee
+    private String mDeviceName; // callee
     private String mPassword;
     private Pubnub mPubNub;
+    private String mStdbyChannel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,15 +42,18 @@ public class PrivacyModeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_privacy_mode);
 
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.TABLET_SHARED_PREFERENCES, Context.MODE_PRIVATE);
-        mDevice = sharedPreferences.getString(Constants.KEY_DEVICE_NAME, "Unspecified");
+        mDeviceName = sharedPreferences.getString(Constants.KEY_DEVICE_NAME, "Unspecified");
         mPassword = sharedPreferences.getString(Constants.KEY_PASSWORD, "Unspecified");
-        ((TextView) findViewById(R.id.device_name)).setText("Device Name: " + mDevice);
+
+        this.mStdbyChannel = this.mDeviceName + Constants.STDBY_SUFFIX;
+
+        ((TextView) findViewById(R.id.device_name)).setText("Device: " + mDeviceName);
         ((TextView) findViewById(R.id.password)).setText("Password: " + mPassword);
 
-        mPubNub = new Pubnub(Constants.PUB_KEY, Constants.SUB_KEY);
-        mPubNub.setUUID(this.mDevice);
+        initPubNub();
 
-        ((ToggleButton) findViewById(R.id.privacy_mode_button)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        ToggleButton mode = (ToggleButton) findViewById(R.id.privacy_mode_button);
+        mode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) { // default state is checked
                     // check network connection
@@ -61,12 +64,13 @@ public class PrivacyModeActivity extends AppCompatActivity {
                         Toast.makeText(PrivacyModeActivity.this, "Please enable WiFi or cellular data to video-chat!", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    registerToReceive(); // register to receive incoming calls
+                    setUserStatus(Constants.STATUS_AVAILABLE);
                 } else {
-                    declineToReceive(); // unsubscribe from the incoming call channel
+                    setUserStatus(Constants.STATUS_BUSY);
                 }
             }
         });
+        mode.setChecked(false); // initial mode is in privacy mode (i.e. status: busy)
     }
 
     @Override
@@ -78,41 +82,99 @@ public class PrivacyModeActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(this.mPubNub!=null){
+            this.mPubNub.unsubscribeAll();
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if(this.mPubNub==null){
+            initPubNub();
+        } else {
+            subscribeStdBy();
+        }
+    }
+
+    /**
+     * Subscribe to standby channel so that it doesn't interfere with the WebRTC Signaling.
+     */
+    public void initPubNub(){
+        Log.e(LOG, "initPubNub");
+        this.mPubNub  = new Pubnub(Constants.PUB_KEY, Constants.SUB_KEY);
+        this.mPubNub.setUUID(this.mDeviceName);
+        subscribeStdBy();
+    }
+
     /**
      * Subscribe to the standby channel to receive incoming calls
      */
-    private void registerToReceive() {
+    private void subscribeStdBy() {
         try {
-            String stdbyChannel = this.mDevice + Constants.STDBY_SUFFIX;
-            this.mPubNub.subscribe(stdbyChannel, new Callback() { // subscribe to incoming calls with a callback
+            this.mPubNub.subscribe(mStdbyChannel, new Callback() { // subscribe to incoming calls with a callback
                 @Override
-                public void successCallback(String channel, Object message) {
-                    Log.e("MA-success", "MESSAGE: " + message.toString());
+                public void successCallback(String channel, Object message) { // received incoming call
+                    Log.e(LOG + "MA-success", "successCallback(): MESSAGE: " + message.toString());
                     if (!(message instanceof JSONObject)) return; // Ignore if not JSONObject
                     JSONObject jsonMsg = (JSONObject) message;
                     try {
-                        if (!jsonMsg.has(Constants.JSON_CALL_USER)) return;
+                        if (!jsonMsg.has(Constants.JSON_CALL_USER)) return; //Ignore Signaling messages.
                         String callerName = jsonMsg.getString(Constants.JSON_CALL_USER);
                         // Consider Accept/Reject call here
                         Intent intent = new Intent(PrivacyModeActivity.this, IncomingCallActivity.class);
                         intent.putExtra(Constants.KEY_CALLER_NAME, callerName);
                         startActivity(intent);
+                        Log.e(LOG, "subscribeStdBy.successCallback(): received incoming call");
                         // does NOT finish() this activity when there's an incoming call (because if user rejects, we can come back)
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
+
+                @Override
+                public void connectCallback(String channel, Object message) {
+                    Log.e(LOG + "MA-iPN", "connectCallback(): CONNECTED: " + message.toString());
+                    setUserStatus(Constants.STATUS_AVAILABLE); // set callee (tablet) status to be 'available'
+                }
+
+                @Override
+                public void errorCallback(String channel, PubnubError error) {
+                    Log.e(LOG + "MA-iPN","errorCallback(): ERROR: " + error.toString());
+                }
             });
-            Log.e(LOG, "initPubNub(): registered to receive incoming calls at " + stdbyChannel);
+            Log.e(LOG, "subscribeStdBy(): registered to receive incoming calls at " + mStdbyChannel);
         } catch (PubnubException e) {
             e.printStackTrace();
         }
     }
 
-    private void declineToReceive() {
-        String stdbyChannel = this.mDevice + Constants.STDBY_SUFFIX;
-        mPubNub.unsubscribe(stdbyChannel); // unsubscribe from the channel
-        Log.e(LOG, "declineToReceive(): unsubscribed to incoming calls from " + stdbyChannel);
+    /**
+     * Set callee status to be AVAILABLE, BUSY or OFFLINE in the standbyChannel
+     * @param status
+     */
+    private void setUserStatus(String status){
+        try {
+            JSONObject state = new JSONObject();
+            state.put(Constants.JSON_STATUS, status);
+            this.mPubNub.setState(this.mStdbyChannel, this.mDeviceName, state, new Callback() {
+                @Override
+                public void successCallback(String channel, Object message) {
+                    Log.e(LOG + "MA-sUS","successCallback(): State Set: " + message.toString());
+                }
+            });
+            Log.e(LOG, "setUserStatus(): " + status);
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void unsubscribeStdBy() {
+        mPubNub.unsubscribe(mStdbyChannel); // unsubscribe from the channel
+        Log.e(LOG, "unsubscribeStdBy(): unsubscribed to incoming calls from " + mStdbyChannel);
     }
 
     public void reset(View v) {

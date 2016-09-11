@@ -13,7 +13,11 @@ public class Constants {
     public static final String JSON_CALL_USER = "call_user"; // caller
     public static final String JSON_CALL_TIME = "call_time";
     public static final String JSON_OCCUPANCY = "occupancy";
+    public static final String JSON_STATUS    = "status";
 
+    public static final String STATUS_AVAILABLE = "Available"; // privacy mode off
+    public static final String STATUS_OFFLINE   = "Offline"; // unsubscribed
+    public static final String STATUS_BUSY      = "Busy"; // privacy mode on
 
     public static final int REQUEST_CAMERA = 1;
 

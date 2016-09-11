@@ -3,8 +3,10 @@ package com.example.junling.iseeu.tablet;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,9 +30,8 @@ import me.kevingleason.pnwebrtc.PnPeerConnectionClient;
 public class IncomingCallActivity extends AppCompatActivity {
     private final String LOG = getClass().getSimpleName();
 
-    private String mUserName; // tablet device name
+    private String mDeviceName; // tablet device name
     private String mCaller; // mobile caller name
-
     private Pubnub mPubNub;
 
     @Override
@@ -38,22 +39,46 @@ public class IncomingCallActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_incoming_call);
 
-        SharedPreferences sharedPreferences = getSharedPreferences(Constants.TABLET_SHARED_PREFERENCES, Context.MODE_PRIVATE);
-        mUserName = sharedPreferences.getString(Constants.KEY_DEVICE_NAME, "Unspecified");
+        SharedPreferences sharedPref = getSharedPreferences(Constants.TABLET_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        mDeviceName = sharedPref.getString(Constants.KEY_DEVICE_NAME, "Unspecified");
 
         mCaller = getIntent().getStringExtra(Constants.KEY_CALLER_NAME); // returns null if caller is not specified
-        ((TextView) findViewById(R.id.caller_text)).setText("Incoming Video Call \n from " + mCaller);
+        ((TextView) findViewById(R.id.caller_text)).setText("Incoming Call \n from " + mCaller);
 
         // initialise pubnub
         mPubNub  = new Pubnub(Constants.PUB_KEY, Constants.SUB_KEY);
-        mPubNub.setUUID(mUserName);
+        mPubNub.setUUID(mDeviceName);
+    }
+
+    public void acceptCall(View view){
+        Intent intent = new Intent(this, VideoChatActivity.class);
+        intent.putExtra(Constants.JSON_USER_NAME, mDeviceName); // user name: device name (tablet)
+        intent.putExtra(Constants.JSON_CALL_USER, mCaller); // call user: caller name (mobile)
+        startActivity(intent);
+        finish();
+        Log.e(LOG, "acceptCall(): call accepted, transitioning to video call");
+    }
+
+    /**
+     * Publish a hangup command if rejecting call.
+     * @param view
+     */
+    public void rejectCall(View view){
+        JSONObject hangupMsg = PnPeerConnectionClient.generateHangupPacket(this.mDeviceName);
+        this.mPubNub.publish(this.mCaller, hangupMsg, new Callback() {
+            @Override
+            public void successCallback(String channel, Object message) {
+                finish(); // goes back to previous activity, whichever that may be
+                Log.e(LOG, "rejectCall.successCallback(): rejected call successfully, transitioning back to privacy mode");
+            }
+        });
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if(mPubNub!=null){
-            mPubNub.unsubscribeAll();
+        if(this.mPubNub!=null){
+            this.mPubNub.unsubscribeAll();
         }
     }
 
@@ -78,28 +103,5 @@ public class IncomingCallActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    public void acceptCall(View view){
-        Intent intent = new Intent(this, VideoChatActivity.class);
-        intent.putExtra(Constants.JSON_USER_NAME, mUserName); // pass in the tablet device name as user name
-//        intent.putExtra(Constants.JSON_CALL_USER, mCaller); // call user == null (@setUpCall())
-        startActivity(intent);
-        IncomingCallActivity.this.finish();
-    }
-
-    /**
-     * Publish a hangup command if rejecting call.
-     * @param view
-     */
-    public void rejectCall(View view){
-        JSONObject hangupMsg = PnPeerConnectionClient.generateHangupPacket(this.mUserName);
-        this.mPubNub.publish(this.mCaller, hangupMsg, new Callback() {
-            @Override
-            public void successCallback(String channel, Object message) {
-                IncomingCallActivity.this.finish(); // goes back to previous activity, whichever that may be
-            }
-        });
-    }
-
 
 }

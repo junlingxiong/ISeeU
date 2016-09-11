@@ -34,9 +34,10 @@ import org.json.JSONObject;
 public class GreetingActivity extends AppCompatActivity {
     private final String LOG = getClass().getSimpleName();
 
+    private String mCallerName; // caller (mobile)
+    private String mDeviceName; // callee, call number (tablet)
+
     private Pubnub mPubNub;
-    private String mUsername; // caller
-    private String mCallNumET; // callee
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +45,13 @@ public class GreetingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mobile_greeting);
 
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.MOBILE_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        mDeviceName = sharedPreferences.getString(Constants.KEY_DEVICE_NAME, "Unspecified");
+        mCallerName = sharedPreferences.getString(Constants.KEY_CALLER_NAME, "Unspecified");
 
-        mCallNumET  = sharedPreferences.getString(Constants.KEY_DEVICE_NAME, "Unspecified");
-        mUsername = sharedPreferences.getString(Constants.KEY_CALLER_NAME, "Unspecified");
-
-        // welcome message in main page.
-        ((TextView) findViewById(R.id.greeting_text)).setText("Hello " + mUsername + "!");
+        ((TextView) findViewById(R.id.greeting_text)).setText("Hello " + mCallerName + "!");
 
         this.mPubNub = new Pubnub(Constants.PUB_KEY, Constants.SUB_KEY);
-        this.mPubNub.setUUID(this.mUsername);
+        this.mPubNub.setUUID(this.mCallerName);
     }
 
     @Override
@@ -80,9 +79,9 @@ public class GreetingActivity extends AppCompatActivity {
             Toast.makeText(GreetingActivity.this, "Please enable WiFi or cellular data to video-chat!", Toast.LENGTH_SHORT).show();
             return;
         }
-        String callNum = mCallNumET; // callee: tablet device name
+        String callNum = mDeviceName; // callee: tablet device name
         callNum = ((EditText) findViewById(R.id.callerName)).getText().toString(); // TODO: for debugging
-        if (callNum.isEmpty() || callNum.equals(this.mUsername)) {
+        if (callNum.isEmpty() || callNum.equals(this.mCallerName)) {
             Toast.makeText(this, "Call number is not valid!", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -121,14 +120,14 @@ public class GreetingActivity extends AppCompatActivity {
                         return;
                     }
                     JSONObject jsonCall = new JSONObject();
-                    jsonCall.put(Constants.JSON_CALL_USER, mUsername);
+                    jsonCall.put(Constants.JSON_CALL_USER, mCallerName);
                     jsonCall.put(Constants.JSON_CALL_TIME, System.currentTimeMillis());
                     mPubNub.publish(callNumStdBy, jsonCall, new Callback() { // publish an outgoing call with a callback
                         @Override
                         public void successCallback(String channel, Object message) {
                             Log.e("MA-dC", "SUCCESS: " + message.toString());
                             Intent intent = new Intent(GreetingActivity.this, VideoChatActivity.class);
-                            intent.putExtra(Constants.JSON_USER_NAME, mUsername); // caller name
+                            intent.putExtra(Constants.JSON_USER_NAME, mCallerName); // caller name
                             intent.putExtra(Constants.JSON_CALL_USER, callNum); // device name
                             startActivity(intent);
                             // do NOT finish() this activity, as when call ends it might return to this interface
@@ -148,6 +147,7 @@ public class GreetingActivity extends AppCompatActivity {
             case Constants.REQUEST_CAMERA: {
                 // If request is cancelled, the result arrays are empty.
                 if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) { // permission denied
+                    findViewById(R.id.call_button).setEnabled(false);
                     Toast.makeText(GreetingActivity.this, "Please enable camera access to start video-chat!", Toast.LENGTH_SHORT).show();
                 }
                 return;

@@ -51,7 +51,7 @@
                 android:layout_marginBottom="25dp"
                 android:textSize="20dp"
                 android:textStyle="bold"
-                android:text="hahhaha"
+                android:text="Device: "
                 android:maxLines="1"
                 android:singleLine="true"
                 android:layout_centerVertical="true"
