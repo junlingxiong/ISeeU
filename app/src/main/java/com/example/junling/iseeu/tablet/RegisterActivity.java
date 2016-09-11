@@ -27,6 +27,8 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_tablet);
         mDeviceName = (EditText) findViewById(R.id.device_name);
+
+        mSharedPref = getSharedPreferences(Constants.TABLET_SHARED_PREFERENCES, Context.MODE_PRIVATE);
     }
 
 

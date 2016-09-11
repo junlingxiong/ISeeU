@@ -62,6 +62,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TABLET);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CALLER);
+
         // creating required
         db.execSQL(CREATE_TABLE_TABLET);
         db.execSQL(CREATE_CALLER_TABLET);

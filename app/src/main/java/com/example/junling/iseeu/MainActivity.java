@@ -19,10 +19,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         DatabaseHelper dbHelper = new DatabaseHelper(this);
-        //dbHelper.onCreate(dbHelper.getWritableDatabase());
-        dbHelper.onUpgrade(dbHelper.getWritableDatabase(), 1, 2);
+        dbHelper.onCreate(dbHelper.getWritableDatabase());
 
         // TODO: check hardware features: camera and auto-focus
     }
